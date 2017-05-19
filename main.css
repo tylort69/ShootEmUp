@@ -1,0 +1,12 @@
+#gameCanvas{
+	border-style:solid;
+	border-color:#000;
+	border-width:2 px;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+	cursor:none;
+}
+#title{
+	text-align: center;
+}
