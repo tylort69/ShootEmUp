@@ -14,9 +14,21 @@ var ms=5;
 var keyStates = [];
 var health=100;
 var ammo =0;
+var bA =[];
+function bullet(sXpos,sYpos,cXpos,sYpos,damage,speed,image,isA){
+	this.sXpos = sXpos;
+	this.sYpos = sYpos;
+	this.cXpos = cXpos;
+	this.cYpos = cYpos;
+	this.damage = damage;
+	this.speed = speed;
+	this.image = imgae;
+	this.isA = isA;
+};
 window.addEventListener('keyup', function(e) {var pos = null; if( (pos = keyStates.indexOf( e.keyCode )) > -1 ) keyStates.splice( pos, 1 ); }, false);
 window.addEventListener("keydown", keyHandler, false);
 setInterval(render, 16.66);
+setInterval(hudU, 16.66);
 function keyHandler(e){
 	//alert(e.keyCode);
 	if (keyStates.indexOf( e.keyCode ) > -1){
@@ -101,18 +113,30 @@ canvas.addEventListener('mousemove', function(evt) {
 	mx=mousePos.x;
 	my=mousePos.y;
 }, false);
-
+function shoot(){
+	var b = new bullet(sx,sy,cx,cy,damage,bs,bi,doa);
+	for(var i=0;i<bA.length-1;i++){
+		bA[i]=b;
+	};
+};
+function hudU(){
+	document.getElementById('playerHealth').innerHTML="Health: "+health;
+};
 function render(){
+	//erase
 	context.clearRect(0, 0, canvas.width, canvas.height);
+	//line from player to crosshair
 	context.beginPath();
 	context.moveTo(pXpos+16,pYpos+16);
 	context.lineTo((mx-chm-1),(my-chm-1));
 	context.strokeStyle="#FF0000";
 	context.stroke();
+	//crosshair
 	context.beginPath();
 	context.fillStyle="#FF0000";
 	context.arc((mx-chm-1), (my-chm-1), chs, 0, 2 * Math.PI);
 	context.fill();
+	//player
 	context.drawImage(imageObj, pXpos,pYpos);
 	console.log(pXpos,pYpos);
 };

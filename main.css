@@ -1,4 +1,5 @@
 #gameCanvas{
+	float:none;
 	border-style:solid;
 	border-color:#000;
 	border-width:2 px;
@@ -7,6 +8,14 @@
     margin-right: auto;
 	cursor:none;
 }
-#title{
-	text-align: center;
+#playerHealth{
+	float:left;
+	margin-left:50px;
+}
+@font-face {
+    font-family: "sDAFS";
+    src: url('./Assets/fonts/SDAFS/SDAFS.otf') format("opentype");
+}
+*{ 
+    font-family: "sDAFS", Verdana, Tahoma;
 }
