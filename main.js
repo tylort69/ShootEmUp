@@ -6,6 +6,9 @@ playerIMG.src = 'Assets/images/playerTestCollision.png';
 var mapIMG = new Image();
 mapIMG.onload = function() {context.drawImage(mapIMG, 0,0);};
 mapIMG.src = 'Assets/images/map.png';
+var bulletIMG = new Image();
+//bulletIMG.onload = function() {context.drawImage(bulletIMG, 0,0);};
+bulletIMG.src = 'Assets/images/bullet.png';
 var pXpos=0;
 var pYpos=0;
 var mx=0;
@@ -108,6 +111,11 @@ function cheatConsole(){
 	case "Stamina":
         stamina=maxStamina*10;
         break;
+	case "teleport":
+	case "Teleport":
+		pXpos= prompt("Desired X Position:", "xxxxx");
+		pYpos= prompt("Desired Y Position:", "yyyyy");
+		break;
     default:
 		alert("Invalid Cheat Code");
 	}
@@ -151,7 +159,7 @@ function moveRight(){
 		pXpos = 804;
 	} else if (pXpos>=874 && pYpos>=132 && pYpos<=377 && pXpos<929){
 		pXpos = 874;
-	} else if (pXpos>=976 && pYpos>=109 && pYpos<=132 && pXpos<1102){
+	} else if (pXpos>=976 && pYpos>77 && pYpos<132 && pXpos<1102){
 		pXpos = 976;
 	} else if (pXpos>=1047 && pYpos>=132 && pYpos<=617 && pXpos<1102){
 		pXpos = 1047;
@@ -184,11 +192,19 @@ canvas.addEventListener('mousemove', function(evt) {
 	mx=mousePos.x;
 	my=mousePos.y;
 }, false);
-function shoot(){
-	var b = new bullet(sx,sy,cx,cy,damage,bs,bi,doa);
+canvas.addEventListener("mousedown", function(evt) {
+	var mousePos = getMousePos(canvas, evt);
+    console.log( 'Click Detected, Mouse position: ' + mousePos.x + ',' + mousePos.y);
+	mx=mousePos.x;
+	my=mousePos.y;
+	shoot(mx,my);
+}, false);
+function shoot(x,y){
+	var b = new bullet(pXpos,pYpos,x,y,20,50,bulletIMG,true);
 	for(var i=0;i<bA.length-1;i++){
 		bA[i]=b;
 	};
+	drawActiveBullets();
 };
 function staminaRefill(){
 	if (stamina<maxStamina){
@@ -226,4 +242,16 @@ function render(){
 	//player
 	context.drawImage(playerIMG, pXpos,pYpos);
 	console.log(pXpos,pYpos);
+	
+	TWEEN.update();
 };
+function drawActiveBullets(){
+	//bA[bA.length-1].
+	var position = { x : bA[bA.length-1].sXpos, y: bA[bA.length-1].sYpos};
+	var target = { x : bA[bA.length-1].cXpos, y: bA[bA.length-1].cYpos};
+	var tween = new TWEEN.Tween(position).to(target, 2000);
+};
+tween.onUpdate(function(){
+    mesh.position.x = position.x;
+    mesh.position.y = position.y;
+});
