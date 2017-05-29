@@ -1,9 +1,11 @@
 var canvas = document.getElementById('gameCanvas');
 var context = canvas.getContext('2d');
-var imageObj = new Image();
-imageObj.onload = function() {context.drawImage(imageObj, 0,0);};
-imageObj.src = 'Assets/images/player.png';
-
+var playerIMG = new Image();
+playerIMG.onload = function() {context.drawImage(playerIMG, 0,0);};
+playerIMG.src = 'Assets/images/player.png';
+var mapIMG = new Image();
+mapIMG.onload = function() {context.drawImage(mapIMG, 0,0);};
+mapIMG.src = 'Assets/images/map.png';
 var pXpos=0;
 var pYpos=0;
 var mx=0;
@@ -65,7 +67,19 @@ function keyHandler(e){
 		moveDown();
 	} else if (keyStates.indexOf( 82 ) > -1){
 		reLoad();
+	} else if (keyStates.indexOf( 192 ) > -1){
+		cheatConsole();
 	}
+}
+function cheatConsole(){
+    var cheat = prompt("Please enter a cheat code:", "Cheat Code");
+    if (cheat == null || cheat == "") {
+        console.log("no cheat was input");
+		keyStates = [];
+    } else {
+        health =1000;
+		keyStates = [];
+    }
 }
 function moveUp(){
 	if (pYpos>0){
@@ -84,7 +98,10 @@ function moveLeft(){
 	}
 }
 function moveRight(){
-	if (pXpos<canvas.width-32){
+	if (pXpos>288 && pYpos<672){
+		pXpos = 288;
+	}
+	else if (pXpos<canvas.width-32){
 		pXpos += ms;
 		if (pXpos>canvas.width-32){
 			pXpos = canvas.width-32;
@@ -125,6 +142,8 @@ function hudU(){
 function render(){
 	//erase
 	context.clearRect(0, 0, canvas.width, canvas.height);
+	//map
+	context.drawImage(mapIMG, 0,0);
 	//line from player to crosshair
 	context.beginPath();
 	context.moveTo(pXpos+16,pYpos+16);
@@ -137,6 +156,6 @@ function render(){
 	context.arc((mx-chm-1), (my-chm-1), chs, 0, 2 * Math.PI);
 	context.fill();
 	//player
-	context.drawImage(imageObj, pXpos,pYpos);
+	context.drawImage(playerIMG, pXpos,pYpos);
 	console.log(pXpos,pYpos);
 };

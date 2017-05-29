@@ -8,9 +8,23 @@
     margin-right: auto;
 	cursor:none;
 }
-#playerHealth{
+#title{
+	font-size:30px;
+	font-weight:1500;
+}
+#hudList{
+	font-size:25px;
 	float:left;
 	margin-left:50px;
+}
+#playerHealth{
+	list-style-image: url('./Assets/images/heart.png');
+}
+#playerAmmo{
+	list-style-image: url('./Assets/images/gun.png');
+}
+#playerStamina{
+	list-style-image: url('./Assets/images/lightning.png');
 }
 @font-face {
     font-family: "sDAFS";
