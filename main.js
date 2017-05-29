@@ -2,7 +2,7 @@ var canvas = document.getElementById('gameCanvas');
 var context = canvas.getContext('2d');
 var playerIMG = new Image();
 playerIMG.onload = function() {context.drawImage(playerIMG, 0,0);};
-playerIMG.src = 'Assets/images/player.png';
+playerIMG.src = 'Assets/images/playerTestCollision.png';
 var mapIMG = new Image();
 mapIMG.onload = function() {context.drawImage(mapIMG, 0,0);};
 mapIMG.src = 'Assets/images/map.png';
@@ -12,12 +12,13 @@ var mx=0;
 var my=0;
 var chs=4;
 var chm = chs/2;
-var ms=5;
+const cms=1;
+var ms=1;
 var is=false;
 var keyStates = [];
 var health=100;
 var ammo =0;
-var stamina =0;
+var stamina =10000;
 var maxStamina=175;
 var bA =[];
 
@@ -39,7 +40,7 @@ setInterval(staminaRefill, 500);
 function keyHandler(e){
 	console.log(is);
 	is=false;
-	ms=5;
+	ms=cms;
 	//alert(e.keyCode);
 	if (keyStates.indexOf( e.keyCode ) > -1){
 		console.log("key already down");
@@ -122,23 +123,42 @@ function moveUp(){
 };
 function moveLeft(){
 	isSprinting();
-	if (pXpos>0){
+	if (pXpos<=343 && pYpos<=617 && pXpos>288){
+		pXpos = 343;
+	} else if (pXpos<=470 && pYpos<=671 && pYpos>=618 && pXpos>288){
+		pXpos = 470;
+	} else if (pXpos>=587 && pYpos>=672 && pXpos<642 && pXpos<1102){
+		pXpos = 587;
+	} else if (pXpos<=0){
+		pXpos = 0;
+	} else {
 		pXpos -= ms;
-		if (pXpos<0){
-			pXpos = 0;
-		}
 	}
 };
 function moveRight(){
 	isSprinting();
-	if (pXpos>288 && pYpos<672){
+	if (pXpos>=288 && pYpos<672 && pXpos<343){
 		pXpos = 288;
-	}
-	else if (pXpos<canvas.width-32){
+	} else if (pXpos>=529 && pYpos<672 && pYpos>617){
+		pXpos = 529;
+	} else if (pXpos>=587 && pYpos>=672 && pXpos<642 && pXpos<1102){
+		pXpos = 587;
+	} else if (pXpos>=708 && pYpos<=617 && pYpos>207 && pXpos<763){
+		pXpos = 708;
+	} else if (pXpos>=708 && pYpos<162 && pYpos>=132 && pXpos<763){
+		pXpos = 708;
+	} else if (pXpos>=804 && pYpos>377 && pYpos<432 && pXpos<987){
+		pXpos = 804;
+	} else if (pXpos>=874 && pYpos>=132 && pYpos<=377 && pXpos<929){
+		pXpos = 874;
+	} else if (pXpos>=976 && pYpos>=109 && pYpos<=132 && pXpos<1102){
+		pXpos = 976;
+	} else if (pXpos>=1047 && pYpos>=132 && pYpos<=617 && pXpos<1102){
+		pXpos = 1047;
+	} else if (pXpos>=canvas.width-32){
+		pXpos = canvas.width-32;
+	} else {
 		pXpos += ms;
-		if (pXpos>canvas.width-32){
-			pXpos = canvas.width-32;
-		}
 	}
 };
 function moveDown(){
