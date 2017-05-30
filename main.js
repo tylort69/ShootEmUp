@@ -122,11 +122,20 @@ function cheatConsole(){
 }
 function moveUp(){
 	isSprinting();
-	if (pYpos>0){
+	if (pYpos<=132 && pYpos>77 && pXpos>=343 && pXpos<=874){
+		pYpos = 132;
+	} else if (pYpos<=132 && pYpos>77 && pXpos>=977 && pXpos<=1047){
+		pYpos = 132;
+	} else if (pYpos<=162 && pYpos>77 && pXpos>=762 && pXpos<=709){
+		pYpos = 162;
+	} else if (pYpos<=432 && pYpos>377 && pXpos>=805 && pXpos<=986){
+		pYpos = 432;
+	} else if (pYpos<=513 && pYpos>458 && pXpos>=343 && pXpos<=653){
+		pYpos = 513;
+	} else if (pYpos<=0){
+		pYpos = 0;
+	} else {
 		pYpos -= ms;
-		if (pYpos<0){
-			pYpos = 0;
-		}
 	}
 };
 function moveLeft(){
@@ -137,7 +146,7 @@ function moveLeft(){
 		pXpos = 470;
 	} else if (pXpos<=642 && pYpos>=672 && pXpos>587){
 		pXpos = 642;
-	} else if (pXpos<=654 && pYpos>=457 && pYpos<513 && pXpos>288){
+	} else if (pXpos<=654 && pYpos>=459 && pYpos<513 && pXpos>288){
 		pXpos = 654;
 	} else if (pXpos<=763 && pYpos>=208 && pYpos<=617 && pXpos>708){
 		pXpos = 763;
