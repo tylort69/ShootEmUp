@@ -135,8 +135,10 @@ function moveLeft(){
 		pXpos = 343;
 	} else if (pXpos<=470 && pYpos<=671 && pYpos>=618 && pXpos>288){
 		pXpos = 470;
-	} else if (pXpos>=587 && pYpos>=672 && pXpos<642 && pXpos<1102){
-		pXpos = 587;
+	} else if (pXpos<=642 && pYpos>=672 && pXpos>587){
+		pXpos = 642;
+	} else if (pXpos<=654 && pYpos>=457 && pYpos<513 && pXpos>288){
+		pXpos = 654;
 	} else if (pXpos<=0){
 		pXpos = 0;
 	} else {
@@ -243,7 +245,7 @@ function render(){
 	context.drawImage(playerIMG, pXpos,pYpos);
 	console.log(pXpos,pYpos);
 	
-	TWEEN.update();
+	//TWEEN.update();
 };
 function drawActiveBullets(){
 	//bA[bA.length-1].
