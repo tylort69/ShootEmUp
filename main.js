@@ -126,12 +126,16 @@ function moveUp(){
 		pYpos = 132;
 	} else if (pYpos<=132 && pYpos>77 && pXpos>=977 && pXpos<=1047){
 		pYpos = 132;
-	} else if (pYpos<=162 && pYpos>77 && pXpos>=762 && pXpos<=709){
+	} else if (pYpos<=162 && pYpos>77 && pXpos<=762 && pXpos>=709){
 		pYpos = 162;
 	} else if (pYpos<=432 && pYpos>377 && pXpos>=805 && pXpos<=986){
 		pYpos = 432;
 	} else if (pYpos<=513 && pYpos>458 && pXpos>=343 && pXpos<=653){
 		pYpos = 513;
+	} else if (pYpos<=672 && pYpos>617 && pXpos>=343 && pXpos<=469){
+		pYpos = 672;
+	} else if (pYpos<=672 && pYpos>617 && pXpos>=530 && pXpos<=1101){
+		pYpos = 672;
 	} else if (pYpos<=0){
 		pYpos = 0;
 	} else {
@@ -168,7 +172,7 @@ function moveRight(){
 	isSprinting();
 	if (pXpos>=288 && pYpos<672 && pXpos<343){
 		pXpos = 288;
-	} else if (pXpos>=529 && pYpos<672 && pYpos>617){
+	} else if (pXpos>=529 && pYpos<672 && pYpos>617 && pXpos<1102){
 		pXpos = 529;
 	} else if (pXpos>=587 && pYpos>=672 && pXpos<642 && pXpos<1102){
 		pXpos = 587;
