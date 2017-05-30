@@ -139,6 +139,16 @@ function moveLeft(){
 		pXpos = 642;
 	} else if (pXpos<=654 && pYpos>=457 && pYpos<513 && pXpos>288){
 		pXpos = 654;
+	} else if (pXpos<=763 && pYpos>=208 && pYpos<=617 && pXpos>708){
+		pXpos = 763;
+	} else if (pXpos<=763 && pYpos>=132 && pYpos<=161 && pXpos>708){
+		pXpos = 763;
+	} else if (pXpos<=929 && pYpos>=78 && pYpos<=377 && pXpos>874){
+		pXpos = 929;
+	} else if (pXpos<=987 && pYpos>=378 && pYpos<=431 && pXpos>804){
+		pXpos = 987;
+	} else if (pXpos<=1102 && pYpos>=78 && pYpos<=671 && pXpos>1047){
+		pXpos = 1102;
 	} else if (pXpos<=0){
 		pXpos = 0;
 	} else {
