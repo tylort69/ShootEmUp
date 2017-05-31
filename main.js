@@ -211,6 +211,10 @@ function moveDown(){
 		pYpos = 377;
 	} else if (pYpos>=207 && pYpos<672 && pXpos>=707 && pXpos<=762){
 		pYpos = 207;
+	} else if (pYpos>=77 && pYpos<132 && pXpos>=343 && pXpos<=928){
+		pYpos = 77;
+	} else if (pYpos>=77 && pYpos<132 && pXpos>=975 && pXpos<1102){
+		pYpos = 77;
 	} else if (pYpos>canvas.height-32){
 		pYpos = canvas.height-32;
 	} else {
@@ -297,6 +301,12 @@ tween.onUpdate(function(){
 
 //TO DO
 /*
-1. finish down collision
-2. add || (existing if) && (pYpos/pXpos -+=ms == the first number in the if)
+1. add" || (existing if) && ((pYpos/pXpos -/+=ms )== the first number in the if)"
+2. add/fix the shooting
+3. make the take damage function
+4. make the enemies shoot
+5. make the bullets stop when they hit a wall
+6. add guns so shooting can have different proprties
+7. make it so enemies dont shoot unlees player is in range
+8. make it so enemies dont shoot if a wall is inbetween the player and them
 */
