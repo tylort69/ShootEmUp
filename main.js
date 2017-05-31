@@ -32,7 +32,7 @@ function bullet(sXpos,sYpos,cXpos,cYpos,damage,speed,image,isA){
 	this.cYpos = cYpos;
 	this.damage = damage;
 	this.speed = speed;
-	this.image = imgae;
+	this.image = image;
 	this.isA = isA;
 };
 window.addEventListener('keyup', function(e) {var pos = null; if( (pos = keyStates.indexOf( e.keyCode )) > -1 ) keyStates.splice( pos, 1 ); }, false);
@@ -116,6 +116,11 @@ function cheatConsole(){
 		pXpos= prompt("Desired X Position:", "xxxxx");
 		pYpos= prompt("Desired Y Position:", "yyyyy");
 		break;
+	case "teleporttomouse":
+	case "TeleportToMouse":
+		pXpos= mx;
+		pYpos= my;
+		break;
     default:
 		alert("Invalid Cheat Code");
 	}
@@ -196,11 +201,20 @@ function moveRight(){
 };
 function moveDown(){
 	isSprinting();
-	if (pYpos<canvas.height-32){
+	if (pYpos>=617 && pYpos<672 && pXpos<=469 && pXpos>=289){
+		pYpos = 617;
+	} else if (pYpos>=617 && pYpos<672 && pXpos>529 && pXpos<1102){
+		pYpos =617;
+	} else if (pYpos>=458 && pYpos<513 && pXpos>=343 && pXpos<=653){
+		pYpos = 458;
+	} else if (pYpos>=377 && pYpos<432 && pXpos>=803 && pXpos<=986){
+		pYpos = 377;
+	} else if (pYpos>=207 && pYpos<672 && pXpos>=707 && pXpos<=762){
+		pYpos = 207;
+	} else if (pYpos>canvas.height-32){
+		pYpos = canvas.height-32;
+	} else {
 		pYpos += ms;
-		if (pYpos>canvas.height-32){
-			pYpos = canvas.height-32;
-		}
 	}
 };
 
@@ -280,3 +294,9 @@ tween.onUpdate(function(){
     mesh.position.x = position.x;
     mesh.position.y = position.y;
 });
+
+//TO DO
+/*
+1. finish down collision
+2. add || (existing if) && (pYpos/pXpos -+=ms == the first number in the if)
+*/
