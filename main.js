@@ -24,7 +24,71 @@ var ammo =0;
 var stamina =10000;
 var maxStamina=175;
 var bA =[];
+/////////////
+//    GUNS //
+/////////////
+var pistol = {
+    damage:8,
+    clipAmmo:7,
+    maxAmmo:20,
+	fireRate:1,//how many times per second can you shoot
+	runSpeedModifier:0,//how much it decreases ms by
+    isEquipped:false
+};
+var smg = {
+    damage:3,
+    clipAmmo:50,
+    maxAmmo:200,
+	fireRate:12,//how many times per second can you shoot
+	runSpeedModifier:1,//how much it decreases ms by
+    isEquipped:false
+};
+var ar = {
+    damage:26,
+    clipAmmo:30,
+    maxAmmo:70,
+	fireRate:4,//how many times per second can you shoot
+	runSpeedModifier:3,//how much it decreases ms by
+    isEquipped:false
+};
+var sniper = {
+    damage:69,
+    clipAmmo:5,
+    maxAmmo:15,
+	fireRate:(1/3),//how many times per second can you shoot
+	runSpeedModifier:5,//how much it decreases ms by
+    isEquipped:false
+};
+//---------------------------------------------------------------------Leron's Work------------------------------------------------------------------------------------------------
 
+var enemy1IsAlive = true;
+var enemy2IsAlive = true;
+var enemy3IsAlive = true;
+var enemy4IsAlive = true;
+
+var enemy1IMG = new Image();
+enemy1IMG.src = 'Assets/images/enemy.png';
+var enemy2IMG = new Image();
+enemy2IMG.src = 'Assets/images/enemy.png';
+var enemy3IMG = new Image();
+enemy3IMG.src = 'Assets/images/enemy.png';
+var enemy4IMG = new Image();
+enemy4IMG.src = 'Assets/images/enemy.png';
+
+var uIval = setInterval(initGame, 300);
+
+function initGame() {
+    dangerArea();
+
+};
+
+function dangerArea() {
+    if (pYpos <= 458 && pYpos > 132 && pXpos >= 343 && pXpos <= 708) {
+        health -= 1;
+    }
+};
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function bullet(sXpos,sYpos,cXpos,cYpos,damage,speed,image,isA){
 	this.sXpos = sXpos;
 	this.sYpos = sYpos;
@@ -215,7 +279,7 @@ function moveDown(){
 		pYpos = 77;
 	} else if (pYpos>=77 && pYpos<132 && pXpos>=975 && pXpos<1102){
 		pYpos = 77;
-	} else if (pYpos>canvas.height-32){
+	} else if (pYpos>=canvas.height-32){
 		pYpos = canvas.height-32;
 	} else {
 		pYpos += ms;
@@ -240,15 +304,9 @@ canvas.addEventListener("mousedown", function(evt) {
     console.log( 'Click Detected, Mouse position: ' + mousePos.x + ',' + mousePos.y);
 	mx=mousePos.x;
 	my=mousePos.y;
-	shoot(mx,my);
+	shoot(pXpos,pYpos,mx,my);
 }, false);
-function shoot(x,y){
-	var b = new bullet(pXpos,pYpos,x,y,20,50,bulletIMG,true);
-	for(var i=0;i<bA.length-1;i++){
-		bA[i]=b;
-	};
-	drawActiveBullets();
-};
+
 function staminaRefill(){
 	if (stamina<maxStamina){
 		stamina++;	
@@ -271,6 +329,22 @@ function render(){
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	//map
 	context.drawImage(mapIMG, 0,0);
+
+	//---------------------------------------------------------------------Leron's Work------------------------------------------------------------------------------------------------
+	//Enemy 1
+	context.drawImage(enemy1IMG, 400, 300);
+	//Enemy 2
+	context.drawImage(enemy2IMG, 800, 600);
+	//Enemy 3
+	context.drawImage(enemy3IMG, 1200, 500);
+	//Enemy 4
+	context.drawImage(enemy4IMG, 500, 60);
+	//Health display in canvas bottom left red
+	//context.fillText("Health:" + health, 20, 796);
+
+
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 	//line from player to crosshair
 	context.beginPath();
 	context.moveTo(pXpos+16,pYpos+16);
@@ -286,22 +360,30 @@ function render(){
 	context.drawImage(playerIMG, pXpos,pYpos);
 	console.log(pXpos,pYpos);
 	
-	//TWEEN.update();
+};
+//Code not working for shooting
+function shoot(sx,sy,tx,ty){
+	var b = new bullet(sx,sy,tx,ty,20,50,bulletIMG,true);
+	bA.push(b);
+	console.log(sx,sy,tx,ty,20,50,bulletIMG,true);
+	drawActiveBullets();
 };
 function drawActiveBullets(){
-	//bA[bA.length-1].
 	var position = { x : bA[bA.length-1].sXpos, y: bA[bA.length-1].sYpos};
 	var target = { x : bA[bA.length-1].cXpos, y: bA[bA.length-1].cYpos};
 	var tween = new TWEEN.Tween(position).to(target, 2000);
+	tween.start();
+	setInterval(TWEEN.update(), 16.66);
+	tween.onUpdate(function(){
+    	mesh.position.x = position.x;
+    	mesh.position.y = position.y;
+	});
 };
-tween.onUpdate(function(){
-    mesh.position.x = position.x;
-    mesh.position.y = position.y;
-});
+
 
 //TO DO
 /*
-1. add" || (existing if) && ((pYpos/pXpos -/+=ms )== the first number in the if)"
+1. fix all the collisions to make it so you cant go into a wall and glitch through by moving in the opposite direction ....I know how to fix this but its way too tedious and time consuming for friday
 2. add/fix the shooting
 3. make the take damage function
 4. make the enemies shoot
@@ -309,4 +391,5 @@ tween.onUpdate(function(){
 6. add guns so shooting can have different proprties
 7. make it so enemies dont shoot unlees player is in range
 8. make it so enemies dont shoot if a wall is inbetween the player and them
+9. make enemies into objects so it is easy to refernce properties when trying to detect if player shoot them and to hold their health
 */
