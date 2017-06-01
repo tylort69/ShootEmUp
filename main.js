@@ -59,12 +59,30 @@ var sniper = {
 	runSpeedModifier:5,//how much it decreases ms by
     isEquipped:false
 };
-//---------------------------------------------------------------------Leron's Work------------------------------------------------------------------------------------------------
+var guns = {
+	pistol:pistol,
+	smg:smg,
+	ar:ar,
+	sniper:sniper
+};
+function gunEquipped(){
+	if(guns.pistol.isEquipped==true){
+		return guns.pistol;
+	} else if(guns.smg.isEquipped==true){
+		return guns.smg;
+	} else if(guns.ar.isEquipped==true){
+		return guns.ar;
+	} else if(guns.sniper.isEquipped==true){
+		return guns.sniper;
+	}
+}
 
-var enemy1IsAlive = true;
-var enemy2IsAlive = true;
-var enemy3IsAlive = true;
-var enemy4IsAlive = true;
+//---------------------------------------------------------------------Leron's Work------------------------------------------------------------------------------------------------
+// not needed as it is implemented in the array of enemy objects
+//var enemy1IsAlive = true;
+//var enemy2IsAlive = true;
+//var enemy3IsAlive = true;
+//var enemy4IsAlive = true;
 
 var enemy1IMG = new Image();
 enemy1IMG.src = 'Assets/images/enemy.png';
@@ -74,6 +92,38 @@ var enemy3IMG = new Image();
 enemy3IMG.src = 'Assets/images/enemy.png';
 var enemy4IMG = new Image();
 enemy4IMG.src = 'Assets/images/enemy.png';
+//-------tylors add on--------------------
+var enemies=[
+	enemy1={
+		xPos:400,
+		yPos:300,
+		health:100,
+		isAlive:true,
+		gunEquipped:guns.pistol
+	},
+	enemy2={
+		xPos:800,
+		yPos:600,
+		health:100,
+		isAlive:true,
+		gunEquipped:guns.smg
+	},
+	enemy3={
+		xPos:1200,
+		yPos:500,
+		health:100,
+		isAlive:true,
+		gunEquipped:guns.ar
+	},
+	enemy4={
+		xPos:500,
+		yPos:60,
+		health:100,
+		isAlive:true,
+		gunEquipped:guns.sniper
+	}
+];
+//----------------------------------
 
 var uIval = setInterval(initGame, 300);
 
@@ -83,22 +133,13 @@ function initGame() {
 };
 
 function dangerArea() {
-    if (pYpos <= 458 && pYpos > 132 && pXpos >= 343 && pXpos <= 708) {
+    if (pYpos <= 458 && pYpos > 132 && pXpos >= 343 && pXpos <= 708 && enemies[0].isAlive==true) {
         health -= 1;
     }
 };
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-function bullet(sXpos,sYpos,cXpos,cYpos,damage,speed,image,isA){
-	this.sXpos = sXpos;
-	this.sYpos = sYpos;
-	this.cXpos = cXpos;
-	this.cYpos = cYpos;
-	this.damage = damage;
-	this.speed = speed;
-	this.image = image;
-	this.isA = isA;
-};
+
 window.addEventListener('keyup', function(e) {var pos = null; if( (pos = keyStates.indexOf( e.keyCode )) > -1 ) keyStates.splice( pos, 1 ); }, false);
 window.addEventListener("keydown", keyHandler, false);
 setInterval(render, 16.66);
@@ -155,6 +196,14 @@ function keyHandler(e){
 		moveDown();
 	} else if (keyStates.indexOf( 82 ) > -1){
 		reLoad();
+	} else if (keyStates.indexOf( 49 ) > -1){
+		changeWeapon(1);
+	} else if (keyStates.indexOf( 50 ) > -1){
+		changeWeapon(2);
+	} else if (keyStates.indexOf( 51 ) > -1){
+		changeWeapon(3);
+	} else if (keyStates.indexOf( 52 ) > -1){
+		changeWeapon(4);
 	} else if (keyStates.indexOf( 192 ) > -1){
 		cheatConsole();
 	}
@@ -163,32 +212,65 @@ function cheatConsole(){
 	keyStates=[];
     var cheat = prompt("Please enter a cheat code:", "Cheat Code");
     switch(cheat) {
-	case "health":
-    case "Health":
-        health=health*10;
-        break;
-	case "ammo":
-    case "Ammo":
-        ammo=500;
-        break;
-    case "stamina":
-	case "Stamina":
-        stamina=maxStamina*10;
-        break;
-	case "teleport":
-	case "Teleport":
-		pXpos= prompt("Desired X Position:", "xxxxx");
-		pYpos= prompt("Desired Y Position:", "yyyyy");
-		break;
-	case "teleporttomouse":
-	case "TeleportToMouse":
-		pXpos= mx;
-		pYpos= my;
-		break;
-    default:
-		alert("Invalid Cheat Code");
+		case "health":
+		case "Health":
+			health=health*10;
+			break;
+		case "ammo":
+		case "Ammo":
+			ammo=500;
+			break;
+		case "stamina":
+		case "Stamina":
+			stamina=maxStamina*10;
+			break;
+		case "teleport":
+		case "Teleport":
+			pXpos= prompt("Desired X Position:", "xxxxx");
+			pYpos= prompt("Desired Y Position:", "yyyyy");
+			break;
+		case "teleporttomouse":
+		case "TeleportToMouse":
+			pXpos= mx;
+			pYpos= my;
+			break;
+		default:
+			alert("Invalid Cheat Code");
 	}
-}
+};
+function changeWeapon(wW){
+	switch(wW){
+		case 1:
+			guns.pistol.isEquipped=true;
+			guns.smg.isEquipped=false;
+			guns.ar.isEquipped=false;
+			guns.sniper.isEquipped=false;
+			break;
+		case 2:
+			guns.pistol.isEquipped=false;
+			guns.smg.isEquipped=true;
+			guns.ar.isEquipped=false;
+			guns.sniper.isEquipped=false;
+			break;
+		case 3:
+			guns.pistol.isEquipped=false;
+			guns.smg.isEquipped=false;
+			guns.ar.isEquipped=true;
+			guns.sniper.isEquipped=false;
+			break;
+		case 4:
+			guns.pistol.isEquipped=false;
+			guns.smg.isEquipped=false;
+			guns.ar.isEquipped=false;
+			guns.sniper.isEquipped=true;
+			break;
+		default:
+			guns.pistol.isEquipped=false;
+			guns.smg.isEquipped=false;
+			guns.ar.isEquipped=false;
+			guns.sniper.isEquipped=false;
+	}
+};
 function moveUp(){
 	isSprinting();
 	if (pYpos<=132 && pYpos>77 && pXpos>=343 && pXpos<=874){
@@ -332,13 +414,13 @@ function render(){
 
 	//---------------------------------------------------------------------Leron's Work------------------------------------------------------------------------------------------------
 	//Enemy 1
-	context.drawImage(enemy1IMG, 400, 300);
+	context.drawImage(enemy1IMG, enemies[0].xPos, enemies[0].yPos);
 	//Enemy 2
-	context.drawImage(enemy2IMG, 800, 600);
+	context.drawImage(enemy2IMG, enemies[1].xPos, enemies[1].yPos);
 	//Enemy 3
-	context.drawImage(enemy3IMG, 1200, 500);
+	context.drawImage(enemy3IMG, enemies[2].xPos, enemies[2].yPos);
 	//Enemy 4
-	context.drawImage(enemy4IMG, 500, 60);
+	context.drawImage(enemy4IMG, enemies[3].xPos, enemies[3].yPos);
 	//Health display in canvas bottom left red
 	//context.fillText("Health:" + health, 20, 796);
 
@@ -362,23 +444,13 @@ function render(){
 	
 };
 //Code not working for shooting
-function shoot(sx,sy,tx,ty){
-	var b = new bullet(sx,sy,tx,ty,20,50,bulletIMG,true);
-	bA.push(b);
-	console.log(sx,sy,tx,ty,20,50,bulletIMG,true);
-	drawActiveBullets();
+function shoot(px,py,mx,my){
+	if(mx>=enemies[0].xPos && mx<=(enemies[0].xPos+32) && my>=enemies[0].yPos && my<=(enemies[0].yPos+32)){
+		enemies[0].health-=gunEquipped().damage
+	}
+	console.log(gunEquipped());
 };
-function drawActiveBullets(){
-	var position = { x : bA[bA.length-1].sXpos, y: bA[bA.length-1].sYpos};
-	var target = { x : bA[bA.length-1].cXpos, y: bA[bA.length-1].cYpos};
-	var tween = new TWEEN.Tween(position).to(target, 2000);
-	tween.start();
-	setInterval(TWEEN.update(), 16.66);
-	tween.onUpdate(function(){
-    	mesh.position.x = position.x;
-    	mesh.position.y = position.y;
-	});
-};
+
 
 
 //TO DO
