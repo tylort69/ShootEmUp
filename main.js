@@ -2,7 +2,7 @@ var canvas = document.getElementById('gameCanvas');
 var context = canvas.getContext('2d');
 var playerIMG = new Image();
 playerIMG.onload = function() {context.drawImage(playerIMG, 0,0);};
-playerIMG.src = 'Assets/images/playerTestCollision.png';
+playerIMG.src = 'Assets/images/player.png';
 var mapIMG = new Image();
 mapIMG.onload = function() {context.drawImage(mapIMG, 0,0);};
 mapIMG.src = 'Assets/images/map.png';
@@ -15,27 +15,29 @@ var mx=0;
 var my=0;
 var chs=4;
 var chm = chs/2;
-const cms=1;
-var ms=1;
+const cms=5;
+var ms=5;
 var is=false;
 var keyStates = [];
 var health=100;
-var ammo =0;
-var stamina =10000;
+var ammo =45;
+var stamina =175;
 var maxStamina=175;
 var bA =[];
 /////////////
 //    GUNS //
 /////////////
 var pistol = {
+	name:"pistol",
     damage:8,
     clipAmmo:7,
     maxAmmo:20,
 	fireRate:1,//how many times per second can you shoot
 	runSpeedModifier:0,//how much it decreases ms by
-    isEquipped:false
+    isEquipped:true
 };
 var smg = {
+	name:"smg",
     damage:3,
     clipAmmo:50,
     maxAmmo:200,
@@ -44,6 +46,7 @@ var smg = {
     isEquipped:false
 };
 var ar = {
+	name:"ar",
     damage:26,
     clipAmmo:30,
     maxAmmo:70,
@@ -52,6 +55,7 @@ var ar = {
     isEquipped:false
 };
 var sniper = {
+	name:"sniper",
     damage:69,
     clipAmmo:5,
     maxAmmo:15,
@@ -89,7 +93,7 @@ enemy1IMG.src = 'Assets/images/enemy.png';
 var enemy2IMG = new Image();
 enemy2IMG.src = 'Assets/images/enemy.png';
 var enemy3IMG = new Image();
-enemy3IMG.src = 'Assets/images/enemy.png';
+enemy3IMG.src = 'Assets/images/Boss.png';
 var enemy4IMG = new Image();
 enemy4IMG.src = 'Assets/images/enemy.png';
 //-------tylors add on--------------------
@@ -97,7 +101,7 @@ var enemies=[
 	enemy1={
 		xPos:400,
 		yPos:300,
-		health:100,
+		health:50,
 		isAlive:true,
 		gunEquipped:guns.pistol
 	},
@@ -111,14 +115,14 @@ var enemies=[
 	enemy3={
 		xPos:1200,
 		yPos:500,
-		health:100,
+		health:500,
 		isAlive:true,
 		gunEquipped:guns.ar
 	},
 	enemy4={
 		xPos:500,
 		yPos:60,
-		health:100,
+		health:200,
 		isAlive:true,
 		gunEquipped:guns.sniper
 	}
@@ -133,9 +137,31 @@ function initGame() {
 };
 
 function dangerArea() {
-    if (pYpos <= 458 && pYpos > 132 && pXpos >= 343 && pXpos <= 708 && enemies[0].isAlive==true) {
+    if (pYpos <= 458 && pYpos > 132 && pXpos >= 343 && pXpos <= 708) {
+        if(enemy1.isAlive){
         health -= 1;
+		}
     }
+    if (pYpos <= 400 && pYpos > 132 && pXpos >= 763 && pXpos <= 825) {
+        if(enemy2.isAlive){
+            health -= 1;
+        }
+    }
+    if (pYpos <= 617  && pYpos > 401 && pXpos >= 763 && pXpos <= 1042) {
+        if(enemy2.isAlive){
+            health -= 1;
+        }
+    }
+    if (pYpos <= 101 && pYpos > 0 && pXpos >= 343 && pXpos <= 1368) {
+        if(enemy4.isAlive){
+            health -= 1;
+        }    }
+    if (pYpos <= 768 && pYpos > 0 && pXpos >= 1102 && pXpos <= 1368) {
+        if(enemy3.isAlive){
+            health -= 1;
+        }
+    }
+
 };
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -233,6 +259,13 @@ function cheatConsole(){
 		case "TeleportToMouse":
 			pXpos= mx;
 			pYpos= my;
+			break;
+		case "killall":
+		case "KillAll":
+			enemies[0].isAlive=false;
+			enemies[1].isAlive=false;
+			enemies[2].isAlive=false;
+			enemies[3].isAlive=false;
 			break;
 		default:
 			alert("Invalid Cheat Code");
@@ -388,6 +421,13 @@ canvas.addEventListener("mousedown", function(evt) {
 	my=mousePos.y;
 	shoot(pXpos,pYpos,mx,my);
 }, false);
+var mouseDown = false;
+document.body.onmousedown = function() { 
+    mouseDown = true;
+}
+document.body.onmouseup = function() {
+    mouseDown = false;
+}
 
 function staminaRefill(){
 	if (stamina<maxStamina){
@@ -405,11 +445,44 @@ function hudU(){
 	document.getElementById('playerHealth').innerHTML="Health: "+health;
 	document.getElementById('playerAmmo').innerHTML="Ammo: "+ammo;
 	document.getElementById('playerStamina').innerHTML="Stamina: "+stamina;
+	switch (gunEquipped().name){
+		case "pistol":
+			document.getElementById('pistolHUD').style.boxShadow="0 0 40px green";
+			document.getElementById('smgHUD').style.boxShadow="";
+			document.getElementById('arHUD').style.boxShadow="";
+			document.getElementById('sniperHUD').style.boxShadow="";
+			break;
+		case "smg":
+			document.getElementById('pistolHUD').style.boxShadow="";
+			document.getElementById('smgHUD').style.boxShadow="0 0 40px green";
+			document.getElementById('arHUD').style.boxShadow="";
+			document.getElementById('sniperHUD').style.boxShadow="";
+			break;
+		case "ar":
+			document.getElementById('pistolHUD').style.boxShadow="";
+			document.getElementById('smgHUD').style.boxShadow="";
+			document.getElementById('arHUD').style.boxShadow="0 0 40px green";
+			document.getElementById('sniperHUD').style.boxShadow="";
+			break;
+		case "sniper":
+			document.getElementById('pistolHUD').style.boxShadow="";
+			document.getElementById('smgHUD').style.boxShadow="";
+			document.getElementById('arHUD').style.boxShadow="";
+			document.getElementById('sniperHUD').style.boxShadow="0 0 40px green";
+		
+	}
 	if(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false){
-		alert("Поздравляем, вы выиграли!");
+		alert("Не забудьте напомнить мне, чтобы убрать весь кокаин и отправить всех проституток, пока мама не вернется домой!");
+	}
+	if (mouseDown==true && ammo>0/*&& !shootingTimer()*/){
+		shoot(pXpos,pYpos,mx,my);
+	}
+	if(health<=0){
+		alert("Вы чертовски мусор в этой игре, откажитесь от жизни и прекратите свое несчастье, ваши родители никогда не любили вас, и теперь совершенно очевидно, почему.");
 	}
 };
 function render(){
+	
 	//erase
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	//map
@@ -447,7 +520,6 @@ function render(){
 	//Health display in canvas bottom left red
 	//context.fillText("Health:" + health, 20, 796);
 
-
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	//line from player to crosshair
@@ -467,19 +539,22 @@ function render(){
 };
 
 function shoot(px,py,mx,my){
-	if(mx>=enemies[0].xPos && mx<=(enemies[0].xPos+32) && my>=enemies[0].yPos && my<=(enemies[0].yPos+32)){
-		enemies[0].health-=gunEquipped().damage;
+	if(ammo>0){
+		if(mx>=enemies[0].xPos && mx<=(enemies[0].xPos+32) && my>=enemies[0].yPos && my<=(enemies[0].yPos+32)){
+			enemies[0].health-=gunEquipped().damage;
+		}
+		if(mx>=enemies[1].xPos && mx<=(enemies[1].xPos+32) && my>=enemies[1].yPos && my<=(enemies[1].yPos+32)){
+			enemies[1].health-=gunEquipped().damage;
+		}
+		if(mx>=enemies[2].xPos && mx<=(enemies[2].xPos+64) && my>=enemies[2].yPos && my<=(enemies[2].yPos+64)){
+			enemies[2].health-=gunEquipped().damage;
+		}
+		if(mx>=enemies[3].xPos && mx<=(enemies[3].xPos+32) && my>=enemies[3].yPos && my<=(enemies[3].yPos+32)){
+			enemies[3].health-=gunEquipped().damage;
+		}
+		console.log(gunEquipped());
+		ammo--;
 	}
-	if(mx>=enemies[1].xPos && mx<=(enemies[1].xPos+32) && my>=enemies[1].yPos && my<=(enemies[1].yPos+32)){
-		enemies[1].health-=gunEquipped().damage;
-	}
-	if(mx>=enemies[2].xPos && mx<=(enemies[2].xPos+32) && my>=enemies[2].yPos && my<=(enemies[2].yPos+32)){
-		enemies[2].health-=gunEquipped().damage;
-	}
-	if(mx>=enemies[3].xPos && mx<=(enemies[3].xPos+32) && my>=enemies[3].yPos && my<=(enemies[3].yPos+32)){
-		enemies[3].health-=gunEquipped().damage;
-	}
-	console.log(gunEquipped());
 };
 
 
