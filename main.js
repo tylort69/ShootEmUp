@@ -1,4 +1,5 @@
 var canvas = document.getElementById('gameCanvas');
+canvas.style.cursor='none';
 var context = canvas.getContext('2d');
 var playerIMG = new Image();
 playerIMG.onload = function() {context.drawImage(playerIMG, 0,0);};
@@ -9,6 +10,9 @@ mapIMG.src = 'Assets/images/map.png';
 var bulletIMG = new Image();
 //bulletIMG.onload = function() {context.drawImage(bulletIMG, 0,0);};
 bulletIMG.src = 'Assets/images/bullet.png';
+var youDiedIMG = new Image();
+//bulletIMG.onload = function() {context.drawImage(bulletIMG, 0,0);};
+youDiedIMG.src = 'Assets/images/youDied.jpg';
 var pXpos=0;
 var pYpos=0;
 var mx=0;
@@ -21,8 +25,8 @@ var is=false;
 var keyStates = [];
 var health=100;
 var ammo =45;
-var stamina =175;
-var maxStamina=175;
+var stamina =250;
+var maxStamina=250;
 var bA =[];
 /////////////
 //    GUNS //
@@ -139,26 +143,26 @@ function initGame() {
 function dangerArea() {
     if (pYpos <= 458 && pYpos > 132 && pXpos >= 343 && pXpos <= 708) {
         if(enemy1.isAlive){
-        health -= 1;
+        health -= enemies[0].gunEquipped.damage;
 		}
     }
     if (pYpos <= 400 && pYpos > 132 && pXpos >= 763 && pXpos <= 825) {
         if(enemy2.isAlive){
-            health -= 1;
+            health -= enemies[1].gunEquipped.damage;
         }
     }
     if (pYpos <= 617  && pYpos > 401 && pXpos >= 763 && pXpos <= 1042) {
         if(enemy2.isAlive){
-            health -= 1;
+            health -= enemies[1].gunEquipped.damage;
         }
     }
     if (pYpos <= 101 && pYpos > 0 && pXpos >= 343 && pXpos <= 1368) {
         if(enemy4.isAlive){
-            health -= 1;
+            health -= enemies[3].gunEquipped.damage;
         }    }
     if (pYpos <= 768 && pYpos > 0 && pXpos >= 1102 && pXpos <= 1368) {
         if(enemy3.isAlive){
-            health -= 1;
+            health -= enemies[2].gunEquipped.damage;
         }
     }
 
@@ -430,8 +434,10 @@ document.body.onmouseup = function() {
 }
 
 function staminaRefill(){
-	if (stamina<maxStamina){
-		stamina++;	
+	if (stamina+(maxStamina/10)>maxStamina){
+		stamina=maxStamina;
+	} else if (stamina<maxStamina){
+		stamina+=(maxStamina/10);
 	}
 };
 function isSprinting(){
@@ -477,9 +483,7 @@ function hudU(){
 	if (mouseDown==true && ammo>0/*&& !shootingTimer()*/){
 		shoot(pXpos,pYpos,mx,my);
 	}
-	if(health<=0){
-		alert("Вы чертовски мусор в этой игре, откажитесь от жизни и прекратите свое несчастье, ваши родители никогда не любили вас, и теперь совершенно очевидно, почему.");
-	}
+	
 };
 function render(){
 	
@@ -536,6 +540,13 @@ function render(){
 	//player
 	context.drawImage(playerIMG, pXpos,pYpos);
 	console.log(pXpos,pYpos);
+	if(health<=0){
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.drawImage(youDiedIMG, 0,0);
+	}
+	if(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false){
+		context.clearRect(0, 0, canvas.width, canvas.height);
+	}
 };
 
 function shoot(px,py,mx,my){
@@ -556,8 +567,18 @@ function shoot(px,py,mx,my){
 		ammo--;
 	}
 };
-
-
+function wonGame(){
+	if(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false){
+		context.clearRect(0, 0, canvas.width, canvas.height);
+	}
+};
+function lostGame(){
+	if(health<=0){
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.drawImage(youDiedIMG, 0,0);
+		canvas.style.cursor='default';
+	}
+};
 
 //TO DO
 /*
