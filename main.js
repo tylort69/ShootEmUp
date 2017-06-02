@@ -405,6 +405,9 @@ function hudU(){
 	document.getElementById('playerHealth').innerHTML="Health: "+health;
 	document.getElementById('playerAmmo').innerHTML="Ammo: "+ammo;
 	document.getElementById('playerStamina').innerHTML="Stamina: "+stamina;
+	if(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false){
+		alert("Поздравляем, вы выиграли!");
+	}
 };
 function render(){
 	//erase
@@ -414,13 +417,33 @@ function render(){
 
 	//---------------------------------------------------------------------Leron's Work------------------------------------------------------------------------------------------------
 	//Enemy 1
-	context.drawImage(enemy1IMG, enemies[0].xPos, enemies[0].yPos);
+	if(enemies[0].health>0){
+		context.drawImage(enemy1IMG, enemies[0].xPos, enemies[0].yPos);
+		context.fillText("Health: " + enemies[0].health, enemies[0].xPos-14, enemies[0].yPos-10);
+	} else if(enemies[0].health<=0){
+		enemies[0].isAlive=false;
+	}
 	//Enemy 2
-	context.drawImage(enemy2IMG, enemies[1].xPos, enemies[1].yPos);
+	if(enemies[1].health>0){
+		context.drawImage(enemy2IMG, enemies[1].xPos, enemies[1].yPos);
+		context.fillText("Health: " + enemies[1].health, enemies[1].xPos-14, enemies[1].yPos-10);
+	} else if(enemies[1].health<=0){
+		enemies[1].isAlive=false;
+	}
 	//Enemy 3
-	context.drawImage(enemy3IMG, enemies[2].xPos, enemies[2].yPos);
+	if(enemies[2].health>0){
+		context.drawImage(enemy3IMG, enemies[2].xPos, enemies[2].yPos);
+		context.fillText("Health: " + enemies[2].health, enemies[2].xPos-14, enemies[2].yPos-10);
+	} else if(enemies[2].health<=0){
+		enemies[2].isAlive=false;
+	}
 	//Enemy 4
-	context.drawImage(enemy4IMG, enemies[3].xPos, enemies[3].yPos);
+	if(enemies[3].health>0){
+		context.drawImage(enemy4IMG, enemies[3].xPos, enemies[3].yPos);
+		context.fillText("Health: " + enemies[3].health, enemies[3].xPos-14, enemies[3].yPos-10);
+	} else if(enemies[3].health<=0){
+		enemies[3].isAlive=false;
+	}
 	//Health display in canvas bottom left red
 	//context.fillText("Health:" + health, 20, 796);
 
@@ -441,12 +464,20 @@ function render(){
 	//player
 	context.drawImage(playerIMG, pXpos,pYpos);
 	console.log(pXpos,pYpos);
-	
 };
-//Code not working for shooting
+
 function shoot(px,py,mx,my){
 	if(mx>=enemies[0].xPos && mx<=(enemies[0].xPos+32) && my>=enemies[0].yPos && my<=(enemies[0].yPos+32)){
-		enemies[0].health-=gunEquipped().damage
+		enemies[0].health-=gunEquipped().damage;
+	}
+	if(mx>=enemies[1].xPos && mx<=(enemies[1].xPos+32) && my>=enemies[1].yPos && my<=(enemies[1].yPos+32)){
+		enemies[1].health-=gunEquipped().damage;
+	}
+	if(mx>=enemies[2].xPos && mx<=(enemies[2].xPos+32) && my>=enemies[2].yPos && my<=(enemies[2].yPos+32)){
+		enemies[2].health-=gunEquipped().damage;
+	}
+	if(mx>=enemies[3].xPos && mx<=(enemies[3].xPos+32) && my>=enemies[3].yPos && my<=(enemies[3].yPos+32)){
+		enemies[3].health-=gunEquipped().damage;
 	}
 	console.log(gunEquipped());
 };
