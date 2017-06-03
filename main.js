@@ -8,11 +8,12 @@ var mapIMG = new Image();
 mapIMG.onload = function() {context.drawImage(mapIMG, 0,0);};
 mapIMG.src = 'Assets/images/map.png';
 var bulletIMG = new Image();
-//bulletIMG.onload = function() {context.drawImage(bulletIMG, 0,0);};
+
 bulletIMG.src = 'Assets/images/bullet.png';
 var youDiedIMG = new Image();
-//bulletIMG.onload = function() {context.drawImage(bulletIMG, 0,0);};
 youDiedIMG.src = 'Assets/images/youDied.jpg';
+var youWonIMG = new Image();
+youWonIMG.src = 'Assets/images/youWon.jpg';
 var pXpos=0;
 var pYpos=0;
 var mx=0;
@@ -477,9 +478,6 @@ function hudU(){
 			document.getElementById('sniperHUD').style.boxShadow="0 0 40px green";
 		
 	}
-	if(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false){
-		alert("Не забудьте напомнить мне, чтобы убрать весь кокаин и отправить всех проституток, пока мама не вернется домой!");
-	}
 	if (mouseDown==true && ammo>0/*&& !shootingTimer()*/){
 		shoot(pXpos,pYpos,mx,my);
 	}
@@ -540,13 +538,8 @@ function render(){
 	//player
 	context.drawImage(playerIMG, pXpos,pYpos);
 	console.log(pXpos,pYpos);
-	if(health<=0){
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		context.drawImage(youDiedIMG, 0,0);
-	}
-	if(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false){
-		context.clearRect(0, 0, canvas.width, canvas.height);
-	}
+	lostGame();
+	wonGame();
 };
 
 function shoot(px,py,mx,my){
@@ -565,11 +558,15 @@ function shoot(px,py,mx,my){
 		}
 		console.log(gunEquipped());
 		ammo--;
+		animateFromTo(pXpos,pYpos,mx,my);
 	}
 };
 function wonGame(){
 	if(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false){
 		context.clearRect(0, 0, canvas.width, canvas.height);
+		console.log("you won");
+		context.drawImage(youWonIMG, 0,0);
+		console.log("you won");
 	}
 };
 function lostGame(){
@@ -577,18 +574,31 @@ function lostGame(){
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		context.drawImage(youDiedIMG, 0,0);
 		canvas.style.cursor='default';
+		health=0;
+		pXpos=0;
+		pYpos=0;
 	}
 };
-
+function animateFromTo(cx,cy,tx,ty){
+	b={
+		cx:cx,
+		cy:cy,
+		tx:tx,
+		ty:ty
+	}
+	createjs.Tween.get(bulletIMG, {loop: true})
+          .to({x: 400}, 1000, createjs.Ease.getPowInOut(4))
+          .to({alpha: 0, y: 75}, 500, createjs.Ease.getPowInOut(2))
+          .to({alpha: 0, y: 125}, 100)
+          .to({alpha: 1, y: 100}, 500, createjs.Ease.getPowInOut(2))
+          .to({x: 100}, 800, createjs.Ease.getPowInOut(2));
+    createjs.Ticker.setFPS(60);
+    createjs.Ticker.addEventListener("tick", canvas);
+};
 //TO DO
 /*
 1. fix all the collisions to make it so you cant go into a wall and glitch through by moving in the opposite direction ....I know how to fix this but its way too tedious and time consuming for friday
-2. add/fix the shooting
-3. make the take damage function
-4. make the enemies shoot
-5. make the bullets stop when they hit a wall
-6. add guns so shooting can have different proprties
-7. make it so enemies dont shoot unlees player is in range
-8. make it so enemies dont shoot if a wall is inbetween the player and them
-9. make enemies into objects so it is easy to refernce properties when trying to detect if player shoot them and to hold their health
+2. fix the shooting
+3. make the enemies shoot
+4. make the bullets stop when they hit a wall
 */
