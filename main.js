@@ -28,6 +28,8 @@ var health=100;
 var ammo =45;
 var stamina =250;
 var maxStamina=250;
+var tTD =0;
+var pSTI = setInterval(pST, 20);
 var bA =[];
 /////////////
 //    GUNS //
@@ -173,9 +175,9 @@ function dangerArea() {
 
 window.addEventListener('keyup', function(e) {var pos = null; if( (pos = keyStates.indexOf( e.keyCode )) > -1 ) keyStates.splice( pos, 1 ); }, false);
 window.addEventListener("keydown", keyHandler, false);
-setInterval(render, 16.66);
-setInterval(hudU, 16.66);
-setInterval(staminaRefill, 500);
+var renderI = setInterval(render, 16.66);
+var hudI = setInterval(hudU, 16.66);
+var staminaI = setInterval(staminaRefill, 500);
 function keyHandler(e){
 	console.log(is);
 	is=false;
@@ -283,30 +285,43 @@ function changeWeapon(wW){
 			guns.smg.isEquipped=false;
 			guns.ar.isEquipped=false;
 			guns.sniper.isEquipped=false;
+			clearInterval(pSTI);
+			tTD=(1000/gunEquipped().fireRate);
+			pSTI = setInterval(pST, 200);
 			break;
 		case 2:
 			guns.pistol.isEquipped=false;
 			guns.smg.isEquipped=true;
 			guns.ar.isEquipped=false;
 			guns.sniper.isEquipped=false;
+			clearInterval(pSTI);
+			tTD=(1000/gunEquipped().fireRate);
+			pSTI = setInterval(pST, 200);
 			break;
 		case 3:
 			guns.pistol.isEquipped=false;
 			guns.smg.isEquipped=false;
 			guns.ar.isEquipped=true;
 			guns.sniper.isEquipped=false;
+			clearInterval(pSTI);
+			tTD=(1000/gunEquipped().fireRate);
+			pSTI = setInterval(pST, 200);
 			break;
 		case 4:
 			guns.pistol.isEquipped=false;
 			guns.smg.isEquipped=false;
 			guns.ar.isEquipped=false;
 			guns.sniper.isEquipped=true;
+			clearInterval(pSTI);
+			tTD=(1000/gunEquipped().fireRate);
+			pSTI = setInterval(pST, 200);
 			break;
 		default:
 			guns.pistol.isEquipped=false;
 			guns.smg.isEquipped=false;
 			guns.ar.isEquipped=false;
 			guns.sniper.isEquipped=false;
+			clearInterval(pSTI);
 	}
 };
 function moveUp(){
@@ -424,7 +439,9 @@ canvas.addEventListener("mousedown", function(evt) {
     console.log( 'Click Detected, Mouse position: ' + mousePos.x + ',' + mousePos.y);
 	mx=mousePos.x;
 	my=mousePos.y;
-	shoot(pXpos,pYpos,mx,my);
+	if (ammo>0 && pST()==0){
+		shoot(pXpos,pYpos,mx,my);
+	}
 }, false);
 var mouseDown = false;
 document.body.onmousedown = function() { 
@@ -438,7 +455,7 @@ function staminaRefill(){
 	if (stamina+(maxStamina/10)>maxStamina){
 		stamina=maxStamina;
 	} else if (stamina<maxStamina){
-		stamina+=(maxStamina/10);
+		stamina+=(maxStamina/25);
 	}
 };
 function isSprinting(){
@@ -478,7 +495,7 @@ function hudU(){
 			document.getElementById('sniperHUD').style.boxShadow="0 0 40px green";
 		
 	}
-	if (mouseDown==true && ammo>0/*&& !shootingTimer()*/){
+	if (mouseDown==true && ammo>0 && pST()==0){
 		shoot(pXpos,pYpos,mx,my);
 	}
 	
@@ -540,6 +557,7 @@ function render(){
 	console.log(pXpos,pYpos);
 	lostGame();
 	wonGame();
+	console.log(pST());
 };
 
 function shoot(px,py,mx,my){
@@ -558,7 +576,8 @@ function shoot(px,py,mx,my){
 		}
 		console.log(gunEquipped());
 		ammo--;
-		animateFromTo(pXpos,pYpos,mx,my);
+		tTD=(1000/gunEquipped().fireRate);
+		//animateFromTo(pXpos,pYpos,mx,my);
 	}
 };
 function wonGame(){
@@ -594,6 +613,14 @@ function animateFromTo(cx,cy,tx,ty){
           .to({x: 100}, 800, createjs.Ease.getPowInOut(2));
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick", canvas);
+};
+function pST (){
+	if(tTD>0&&tTD-20>0){
+		tTD -= 20;
+	} else {
+		tTD=0;
+	}
+	return tTD;
 };
 //TO DO
 /*
