@@ -8,14 +8,16 @@ var mapIMG = new Image();
 mapIMG.onload = function() {context.drawImage(mapIMG, 0,0);};
 mapIMG.src = 'Assets/images/map.png';
 var bulletIMG = new Image();
-
 bulletIMG.src = 'Assets/images/bullet.png';
 var youDiedIMG = new Image();
 youDiedIMG.src = 'Assets/images/youDied.jpg';
 var youWonIMG = new Image();
 youWonIMG.src = 'Assets/images/youWon.jpg';
-var pXpos=0;
-var pYpos=0;
+var bGM = new Audio('Assets/sounds/music/4ware.mp3');
+bGM.volume=0.5;
+bGM.play();
+var pXpos=150;
+var pYpos=300;
 var mx=0;
 var my=0;
 var chs=4;
@@ -110,62 +112,92 @@ var enemies=[
 		yPos:300,
 		health:50,
 		isAlive:true,
-		gunEquipped:guns.pistol
+		gunEquipped:guns.pistol,
+		tTDE:0
 	},
 	enemy2={
 		xPos:800,
 		yPos:600,
 		health:100,
 		isAlive:true,
-		gunEquipped:guns.smg
+		gunEquipped:guns.smg,
+		tTDE:0
 	},
 	enemy3={
 		xPos:1200,
 		yPos:500,
 		health:500,
 		isAlive:true,
-		gunEquipped:guns.ar
+		gunEquipped:guns.ar,
+		tTDE:0
 	},
 	enemy4={
 		xPos:500,
 		yPos:60,
 		health:200,
 		isAlive:true,
-		gunEquipped:guns.sniper
+		gunEquipped:guns.sniper,
+		tTDE:0
 	}
 ];
 //----------------------------------
 
-var uIval = setInterval(initGame, 300);
+var uIval = setInterval(initGame, 20);
 
 function initGame() {
     dangerArea();
-
+	uEST();//update Enemy Shooting Timer
 };
-
+function uEST(){
+	if(enemy1.tTDE>20&&enemy1.tTDE-20>0){
+		enemy1.tTDE-=20;
+	} else {
+		enemy1.tTDE=0;
+	}
+	if(enemy2.tTDE>20&&enemy2.tTDE-20>0){
+		enemy2.tTDE-=20;
+	} else {
+		enemy2.tTDE=0;
+	}
+	if(enemy3.tTDE>20&&enemy3.tTDE-20>0){
+		enemy3.tTDE-=20;
+	} else {
+		enemy3.tTDE=0;
+	}
+	if(enemy4.tTDE>20&&enemy4.tTDE-20>0){
+		enemy4.tTDE-=20;
+	} else {
+		enemy4.tTDE=0;
+	}
+};
 function dangerArea() {
     if (pYpos <= 458 && pYpos > 132 && pXpos >= 343 && pXpos <= 708) {
-        if(enemy1.isAlive){
-        health -= enemies[0].gunEquipped.damage;
+        if(enemy1.isAlive && enemy1.tTDE==0){
+        	health -= enemies[0].gunEquipped.damage;
+			enemy1.tTDE=(1000/enemies[0].gunEquipped.fireRate);
 		}
     }
     if (pYpos <= 400 && pYpos > 132 && pXpos >= 763 && pXpos <= 825) {
-        if(enemy2.isAlive){
+        if(enemy2.isAlive && enemy2.tTDE==0){
             health -= enemies[1].gunEquipped.damage;
+			enemy2.tTDE=(1000/enemies[1].gunEquipped.fireRate);
         }
     }
     if (pYpos <= 617  && pYpos > 401 && pXpos >= 763 && pXpos <= 1042) {
-        if(enemy2.isAlive){
+        if(enemy2.isAlive && enemy2.tTDE==0){
             health -= enemies[1].gunEquipped.damage;
+			enemy2.tTDE=(1000/enemies[1].gunEquipped.fireRate);
         }
     }
     if (pYpos <= 101 && pYpos > 0 && pXpos >= 343 && pXpos <= 1368) {
-        if(enemy4.isAlive){
+        if(enemy4.isAlive && enemy4.tTDE==0){
             health -= enemies[3].gunEquipped.damage;
+			enemy4.tTDE=(1000/enemies[3].gunEquipped.fireRate);
         }    }
     if (pYpos <= 768 && pYpos > 0 && pXpos >= 1102 && pXpos <= 1368) {
-        if(enemy3.isAlive){
+        if(enemy3.isAlive && enemy3.tTDE==0){
             health -= enemies[2].gunEquipped.damage;
+			enemy3.tTDE=(1000/enemies[2].gunEquipped.fireRate);
         }
     }
 
@@ -582,6 +614,7 @@ function shoot(px,py,mx,my){
 };
 function wonGame(){
 	if(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false){
+		bGM.pause();
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		console.log("you won");
 		context.drawImage(youWonIMG, 0,0);
@@ -590,6 +623,7 @@ function wonGame(){
 };
 function lostGame(){
 	if(health<=0){
+		bGM.pause();
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		context.drawImage(youDiedIMG, 0,0);
 		canvas.style.cursor='default';
