@@ -6,7 +6,7 @@ playerIMG.onload = function() {context.drawImage(playerIMG, 0,0);};
 playerIMG.src = 'Assets/images/player.png';
 var mapIMG = new Image();
 mapIMG.onload = function() {context.drawImage(mapIMG, 0,0);};
-mapIMG.src = 'Assets/images/map.png';
+mapIMG.src = 'Assets/images/map2.png';
 var bulletIMG = new Image();
 bulletIMG.src = 'Assets/images/bullet.png';
 var youDiedIMG = new Image();
@@ -14,7 +14,7 @@ youDiedIMG.src = 'Assets/images/youDied.jpg';
 var youWonIMG = new Image();
 youWonIMG.src = 'Assets/images/youWon.jpg';
 var bGM = new Audio('Assets/sounds/music/4ware.mp3');
-bGM.volume=0.5;
+bGM.volume=0.25;
 bGM.play();
 var pXpos=150;
 var pYpos=300;
@@ -503,28 +503,28 @@ function hudU(){
 	document.getElementById('playerStamina').innerHTML="Stamina: "+stamina;
 	switch (gunEquipped().name){
 		case "pistol":
-			document.getElementById('pistolHUD').style.boxShadow="0 0 40px green";
-			document.getElementById('smgHUD').style.boxShadow="";
-			document.getElementById('arHUD').style.boxShadow="";
-			document.getElementById('sniperHUD').style.boxShadow="";
+			document.getElementById('pistolHUD').style.color="green";
+			document.getElementById('smgHUD').style.color="black";
+			document.getElementById('arHUD').style.color="black";
+			document.getElementById('sniperHUD').style.color="black";
 			break;
 		case "smg":
-			document.getElementById('pistolHUD').style.boxShadow="";
-			document.getElementById('smgHUD').style.boxShadow="0 0 40px green";
-			document.getElementById('arHUD').style.boxShadow="";
-			document.getElementById('sniperHUD').style.boxShadow="";
+			document.getElementById('pistolHUD').style.color="black";
+			document.getElementById('smgHUD').style.color="green";
+			document.getElementById('arHUD').style.color="black";
+			document.getElementById('sniperHUD').style.color="black";
 			break;
 		case "ar":
-			document.getElementById('pistolHUD').style.boxShadow="";
-			document.getElementById('smgHUD').style.boxShadow="";
-			document.getElementById('arHUD').style.boxShadow="0 0 40px green";
-			document.getElementById('sniperHUD').style.boxShadow="";
+			document.getElementById('pistolHUD').style.color="black";
+			document.getElementById('smgHUD').style.color="black";
+			document.getElementById('arHUD').style.color="green";
+			document.getElementById('sniperHUD').style.color="black";
 			break;
 		case "sniper":
-			document.getElementById('pistolHUD').style.boxShadow="";
-			document.getElementById('smgHUD').style.boxShadow="";
-			document.getElementById('arHUD').style.boxShadow="";
-			document.getElementById('sniperHUD').style.boxShadow="0 0 40px green";
+			document.getElementById('pistolHUD').style.color="black";
+			document.getElementById('smgHUD').style.color="black";
+			document.getElementById('arHUD').style.color="black";
+			document.getElementById('sniperHUD').style.color="green";
 		
 	}
 	if (mouseDown==true && ammo>0 && pST()==0){
@@ -585,13 +585,26 @@ function render(){
 	context.arc((mx-chm-1), (my-chm-1), chs, 0, 2 * Math.PI);
 	context.fill();
 	//player
+	//context.save();
+    //context.translate(pXpos+16,pYpos+16); // change origin
+    //context.rotate(lookAngle()*Math.PI/180);
+    //context.drawImage(playerIMG,pXpos,pYpos);
+    //context.restore();
 	context.drawImage(playerIMG, pXpos,pYpos);
 	console.log(pXpos,pYpos);
 	lostGame();
 	wonGame();
 	console.log(pST());
 };
-
+function lookAngle(){
+	var a = pXpos - mx;
+	var b = pYpos - my;
+	var c = Math.sqrt(((a*2)+(b*2)));
+	var tan = b/a;
+	var cos = a/c;
+	var sin = b/c;
+	return tan;
+};
 function shoot(px,py,mx,my){
 	if(ammo>0){
 		if(mx>=enemies[0].xPos && mx<=(enemies[0].xPos+32) && my>=enemies[0].yPos && my<=(enemies[0].yPos+32)){
