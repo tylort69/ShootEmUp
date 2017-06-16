@@ -36,3 +36,7 @@
 *{ 
     font-family: "sDAFS", Verdana, Tahoma;
 }
+
+body{
+	background-color:#999;
+}

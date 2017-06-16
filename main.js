@@ -108,24 +108,24 @@ enemy4IMG.src = 'Assets/images/enemy.png';
 //-------tylors add on--------------------
 var enemies=[
 	enemy1={
-		xPos:400,
-		yPos:300,
+		xPos:800,
+		yPos:500,
 		health:50,
 		isAlive:true,
 		gunEquipped:guns.pistol,
 		tTDE:0
 	},
 	enemy2={
-		xPos:800,
-		yPos:600,
+		xPos:450,
+		yPos:60,
 		health:100,
 		isAlive:true,
 		gunEquipped:guns.smg,
 		tTDE:0
 	},
 	enemy3={
-		xPos:1200,
-		yPos:500,
+		xPos:800,
+		yPos:700,
 		health:500,
 		isAlive:true,
 		gunEquipped:guns.ar,
@@ -146,7 +146,48 @@ var uIval = setInterval(initGame, 20);
 
 function initGame() {
     dangerArea();
-	uEST();//update Enemy Shooting Timer
+    uEST();//update Enemy Shooting Timer
+    enemyAnimator();
+};
+
+function enemyAnimator(){
+    if(enemy1.yPos >= 175){
+        enemy1.yPos -= 1;
+    }
+    if(enemy1.yPos < 176 && enemy1.xPos >= 475){
+        enemy1.xPos -= 1;
+    }
+    if(enemy1.xPos < 476 && enemy1.yPos <= 400){
+        enemy1.yPos += 2;
+    }
+    
+    if(enemy2.xPos <= 968){
+        enemy2.xPos += 1;
+    }
+    
+    if(enemy2.xPos > 967 && enemy2.yPos <= 280){
+        enemy2.yPos += 1;
+    }
+    
+    if(enemy2.yPos > 279 && enemy2.xPos <= 1120){
+        enemy2.xPos += 1;
+    }
+    
+    if(enemy2.xPos > 1119 && enemy2.yPos <= 430){
+        enemy2.yPos += 1;
+    }
+    if(enemy2.yPos > 429 && enemy2.xPos >= 800){
+        enemy2.xPos -= 2.1;
+    }
+    
+    if(enemy3.xPos <= 1250){
+        enemy3.xPos += 1;
+    }
+    
+    if(enemy3.xPos > 1249 && enemy3.yPos >= 400){
+        enemy3.yPos -= 1;
+    }
+    
 };
 function uEST(){
 	if(enemy1.tTDE>20&&enemy1.tTDE-20>0){
@@ -358,20 +399,26 @@ function changeWeapon(wW){
 };
 function moveUp(){
 	isSprinting();
-	if (pYpos<=132 && pYpos>77 && pXpos>=343 && pXpos<=874){
-		pYpos = 132;
-	} else if (pYpos<=132 && pYpos>77 && pXpos>=977 && pXpos<=1047){
-		pYpos = 132;
+	if (pYpos<=107 && pYpos>90 && pXpos>=343 && pXpos<=953){
+		pYpos = 107;
+	} else if (pYpos<=107 && pYpos>90 && pXpos>=1024 && pXpos<=1167){
+		pYpos = 107;
 	} else if (pYpos<=162 && pYpos>77 && pXpos<=762 && pXpos>=709){
 		pYpos = 162;
-	} else if (pYpos<=432 && pYpos>377 && pXpos>=805 && pXpos<=986){
-		pYpos = 432;
-	} else if (pYpos<=513 && pYpos>458 && pXpos>=343 && pXpos<=653){
-		pYpos = 513;
-	} else if (pYpos<=672 && pYpos>617 && pXpos>=343 && pXpos<=469){
-		pYpos = 672;
-	} else if (pYpos<=672 && pYpos>617 && pXpos>=530 && pXpos<=1101){
-		pYpos = 672;
+	} else if (pYpos<=400 && pYpos>377 && pXpos>=805 && pXpos<=986){
+		pYpos = 400;
+	} else if (pYpos<=476 && pYpos>458 && pXpos> 343 && pXpos< 430){
+	    pYpos = 476;
+	} else if (pYpos <= 476 && pYpos > 458 && pXpos >= 470 && pXpos <= 766) {
+	    pYpos = 476;
+	//} else if (pYpos<=672 && pYpos>617 && pXpos>=343 && pXpos<=469){
+		//pYpos = 672;
+	} else if (pYpos< 635 && pYpos>617 && pXpos> 667 && pXpos <1099){
+	    pYpos = 635;
+	} else if (pYpos <= 287 && pYpos > 0 && pXpos >= 77 && pXpos <= 199) {
+	    pYpos = 287;
+	} else if (pYpos <= 720 && pYpos > 635 && pXpos >= 235 && pXpos < 600) {
+	    pYos = 720;
 	} else if (pYpos<=0){
 		pYpos = 0;
 	} else {
@@ -384,20 +431,22 @@ function moveLeft(){
 		pXpos = 343;
 	} else if (pXpos<=470 && pYpos<=671 && pYpos>=618 && pXpos>288){
 		pXpos = 470;
-	} else if (pXpos<=642 && pYpos>=672 && pXpos>587){
-		pXpos = 642;
-	} else if (pXpos<=654 && pYpos>=459 && pYpos<513 && pXpos>288){
-		pXpos = 654;
-	} else if (pXpos<=763 && pYpos>=208 && pYpos<=617 && pXpos>708){
-		pXpos = 763;
-	} else if (pXpos<=763 && pYpos>=132 && pYpos<=161 && pXpos>708){
-		pXpos = 763;
-	} else if (pXpos<=929 && pYpos>=78 && pYpos<=377 && pXpos>874){
-		pXpos = 929;
-	} else if (pXpos<=987 && pYpos>=378 && pYpos<=431 && pXpos>804){
-		pXpos = 987;
-	} else if (pXpos<=1102 && pYpos>=78 && pYpos<=671 && pXpos>1047){
-		pXpos = 1102;
+	} else if (pXpos<=600 && pYpos>=617 && pXpos>235 && pYpos<= 712){
+		pXpos = 600;
+	//} else if (pXpos<=654 && pYpos>=459 && pYpos<513 && pXpos>288){
+		//pXpos = 654;
+	} else if (pXpos<=784 && pYpos>=220 && pYpos<=617 && pXpos>765){
+		pXpos = 784;
+	} else if (pXpos<=784 && pYpos>=90 && pYpos<=150 && pXpos>765){
+		pXpos = 784;
+	} else if (pXpos<=957 && pYpos>=78 && pYpos<=377 && pXpos>939){
+		pXpos = 957;
+	//} else if (pXpos<=987 && pYpos>=378 && pYpos<=431 && pXpos>804){
+		//pXpos = 987;
+	} else if (pXpos<=1183 && pYpos>=90 && pYpos<=626 && pXpos>1170){
+	    pXpos = 1183;
+	} else if (pXpos <= 204 && pYpos >= 0 && pYpos <= 286 && pXpos > 60) {
+	    pXpos = 204;
 	} else if (pXpos<=0){
 		pXpos = 0;
 	} else {
@@ -407,23 +456,29 @@ function moveLeft(){
 function moveRight(){
 	isSprinting();
 	if (pXpos>=288 && pYpos<672 && pXpos<343){
-		pXpos = 288;
-	} else if (pXpos>=529 && pYpos<672 && pYpos>617 && pXpos<1102){
+	    pXpos = 288;
+	} else if (pXpos >= 232 && pYpos < 720 && pYpos > 210 && pXpos < 343) {
+	    pXpos = 232;
+	} else if (pXpos>=529 && pYpos<672 && pYpos>617 && pXpos<599){
 		pXpos = 529;
-	} else if (pXpos>=587 && pYpos>=672 && pXpos<642 && pXpos<1102){
-		pXpos = 587;
-	} else if (pXpos>=708 && pYpos<=617 && pYpos>207 && pXpos<763){
-		pXpos = 708;
-	} else if (pXpos>=708 && pYpos<162 && pYpos>=132 && pXpos<763){
-		pXpos = 708;
-	} else if (pXpos>=804 && pYpos>377 && pYpos<432 && pXpos<987){
-		pXpos = 804;
-	} else if (pXpos>=874 && pYpos>=132 && pYpos<=377 && pXpos<929){
-		pXpos = 874;
-	} else if (pXpos>=976 && pYpos>77 && pYpos<132 && pXpos<1102){
+	} else if (pXpos> 754 && pYpos > 220 && pXpos < 780 && pYpos < 625){
+	    pXpos = 754;
+	} else if (pXpos > 754 && pYpos > 95 && pXpos < 780 && pYpos < 150) {
+	    pXpos = 754;
+	} else if (pXpos>700 && pYpos< 800 && pYpos>640 && pXpos<763){
+		pXpos = 700;
+	//} else if (pXpos>=708 && pYpos<162 && pYpos>=132 && pXpos<763){
+		//pXpos = 708;
+	//} else if (pXpos>=804 && pYpos>377 && pYpos<432 && pXpos<987){
+		//pXpos = 804;
+	} else if (pXpos>930 && pYpos> 99 && pYpos< 383 && pXpos<953){
+		pXpos = 930;
+	} else if (pXpos>976 && pYpos>77 && pYpos<132 && pXpos<1102){
 		pXpos = 976;
-	} else if (pXpos>=1047 && pYpos>=132 && pYpos<=617 && pXpos<1102){
-		pXpos = 1047;
+	} else if (pXpos>=1167 && pYpos>=99 && pYpos<=617 && pXpos<1184){
+	    pXpos = 1167;
+	} else if (pXpos <= 204 && pYpos >= 0 && pYpos <= 270 && pXpos > 60) {
+	    pXpos = 76;
 	} else if (pXpos>=canvas.width-32){
 		pXpos = canvas.width-32;
 	} else {
@@ -432,20 +487,25 @@ function moveRight(){
 };
 function moveDown(){
 	isSprinting();
-	if (pYpos>=617 && pYpos<672 && pXpos<=469 && pXpos>=289){
-		pYpos = 617;
-	} else if (pYpos>=617 && pYpos<672 && pXpos>529 && pXpos<1102){
-		pYpos =617;
-	} else if (pYpos>=458 && pYpos<513 && pXpos>=343 && pXpos<=653){
-		pYpos = 458;
-	} else if (pYpos>=377 && pYpos<432 && pXpos>=803 && pXpos<=986){
-		pYpos = 377;
+	if (pYpos > 590 && pYpos < 710 && pXpos > 340 && pXpos < 600) {
+	    pYpos = 590;
+	} else if (pYpos > 590 && pYpos < 672 && pXpos > 667 && pXpos < 764) {
+	    pYpos = 590;
+	//} else if (pYpos < 474 && pYpos > 430 && pXpos > 343 && pXpos < 430) {
+	   // pYpos = 430;
+	//} else if (pYpos < 474 && pYpos > 430 && pXpos >= 470 && pXpos <= 766) {
+	   // pYpos = 430;
+	} else if (pYpos>360 && pYpos<402 && pXpos> 847 && pXpos< 1090){
+		pYpos = 360;
 	} else if (pYpos>=207 && pYpos<672 && pXpos>=707 && pXpos<=762){
 		pYpos = 207;
-	} else if (pYpos>=77 && pYpos<132 && pXpos>=343 && pXpos<=928){
-		pYpos = 77;
-	} else if (pYpos>=77 && pYpos<132 && pXpos>=975 && pXpos<1102){
-		pYpos = 77;
+	} else if (pYpos>=90 && pYpos<107 && pXpos>=343 && pXpos<=953){
+		pYpos = 90;
+	} else if (pYpos>=90 && pYpos<107 && pXpos>=1023 && pXpos<1181){
+	    pYpos = 90;
+	} else if (pYpos >= 220 && pYpos < 720 && pXpos > 232 && pXpos < 325) {
+	    pYpos = 220;
+
 	} else if (pYpos>=canvas.height-32){
 		pYpos = canvas.height-32;
 	} else {
