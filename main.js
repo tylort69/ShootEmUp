@@ -4,6 +4,8 @@ var context = canvas.getContext('2d');
 var playerIMG = new Image();
 playerIMG.onload = function() {context.drawImage(playerIMG, 0,0);};
 playerIMG.src = 'Assets/images/player.png';
+var fLLIMG = new Image();
+fLLIMG.src = 'Assets/images/flashlightlightv2.png';
 var mapIMG = new Image();
 mapIMG.onload = function() {context.drawImage(mapIMG, 0,0);};
 mapIMG.src = 'Assets/images/map2.png';
@@ -13,6 +15,8 @@ var youDiedIMG = new Image();
 youDiedIMG.src = 'Assets/images/youDied.jpg';
 var youWonIMG = new Image();
 youWonIMG.src = 'Assets/images/youWon.jpg';
+var fowIMG = new Image();
+fowIMG.src = 'Assets/images/NightFOW.png';
 var bGM = new Audio('Assets/sounds/music/4ware.mp3');
 bGM.volume=0.25;
 bGM.play();
@@ -33,6 +37,15 @@ var maxStamina=250;
 var tTD =0;
 var pSTI = setInterval(pST, 20);
 var bA =[];
+// BULLETS //
+var deltaX = 0;
+var deltaY = 0;
+var rotation = 0;
+var xtarget = 0;
+var ytarget = 0;
+var theBullets = [];
+var deltaX, deltaY, newAngle = 0;
+/////////////////////////////////////////
 /////////////
 //    GUNS //
 /////////////
@@ -645,16 +658,27 @@ function render(){
 	context.arc((mx-chm-1), (my-chm-1), chs, 0, 2 * Math.PI);
 	context.fill();
 	//player
-	//context.save();
-    //context.translate(pXpos+16,pYpos+16); // change origin
-    //context.rotate(lookAngle()*Math.PI/180);
-    //context.drawImage(playerIMG,pXpos,pYpos);
-    //context.restore();
-	context.drawImage(playerIMG, pXpos,pYpos);
+	context.save();
+    context.translate(pXpos+16,pYpos+16); // change origin
+    context.rotate(lookAngle());
+	context.translate(-pXpos-16,-pYpos-16);
+	//context.rotate(3);
+    context.drawImage(playerIMG,pXpos,pYpos);
+	//context.drawImage(fowIMG,0,0);
+	context.translate(pXpos+16,pYpos+16);
+	context.rotate(90*Math.PI/180);
+	context.translate(-pXpos-16,-pYpos-16);	
+	context.drawImage(fLLIMG,pXpos-102,pYpos-256);
+    context.restore();
+	//context.drawImage(playerIMG, pXpos,pYpos);
 	console.log(pXpos,pYpos);
 	lostGame();
 	wonGame();
 	console.log(pST());
+	// BULLETS
+	bulletsMove();
+	bulletsDraw();
+	//checkBulletHits();
 };
 function lookAngle(){
 	var a = pXpos - mx;
@@ -663,7 +687,9 @@ function lookAngle(){
 	var tan = b/a;
 	var cos = a/c;
 	var sin = b/c;
-	return tan;
+	var angle = Math.atan2((my - (pYpos+16)), (mx - (pXpos+16)));
+	console.log(angle);
+	return angle;
 };
 function shoot(px,py,mx,my){
 	if(ammo>0){
@@ -680,6 +706,7 @@ function shoot(px,py,mx,my){
 			enemies[3].health-=gunEquipped().damage;
 		}
 		console.log(gunEquipped());
+		createBullet(mx, my, pXpos + (32 / 2), pYpos + (32 / 2));
 		ammo--;
 		tTD=(1000/gunEquipped().fireRate);
 		//animateFromTo(pXpos,pYpos,mx,my);
@@ -705,22 +732,22 @@ function lostGame(){
 		pYpos=0;
 	}
 };
-function animateFromTo(cx,cy,tx,ty){
-	b={
-		cx:cx,
-		cy:cy,
-		tx:tx,
-		ty:ty
-	}
-	createjs.Tween.get(bulletIMG, {loop: true})
-          .to({x: 400}, 1000, createjs.Ease.getPowInOut(4))
-          .to({alpha: 0, y: 75}, 500, createjs.Ease.getPowInOut(2))
-          .to({alpha: 0, y: 125}, 100)
-          .to({alpha: 1, y: 100}, 500, createjs.Ease.getPowInOut(2))
-          .to({x: 100}, 800, createjs.Ease.getPowInOut(2));
-    createjs.Ticker.setFPS(60);
-    createjs.Ticker.addEventListener("tick", canvas);
-};
+// function animateFromTo(cx,cy,tx,ty){
+// 	b={
+// 		cx:cx,
+// 		cy:cy,
+// 		tx:tx,
+// 		ty:ty
+// 	}
+// 	createjs.Tween.get(bulletIMG, {loop: true})
+//           .to({x: 400}, 1000, createjs.Ease.getPowInOut(4))
+//           .to({alpha: 0, y: 75}, 500, createjs.Ease.getPowInOut(2))
+//           .to({alpha: 0, y: 125}, 100)
+//           .to({alpha: 1, y: 100}, 500, createjs.Ease.getPowInOut(2))
+//           .to({x: 100}, 800, createjs.Ease.getPowInOut(2));
+//     createjs.Ticker.setFPS(60);
+//     createjs.Ticker.addEventListener("tick", canvas);
+// };
 function pST (){
 	if(tTD>0&&tTD-20>0){
 		tTD -= 20;
@@ -729,6 +756,123 @@ function pST (){
 	}
 	return tTD;
 };
+function createBullet(targetX, targetY, shooterX, shooterY) {
+	if (!(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false&&health>0)) {
+		console.log (!(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false&&health>0));
+		deltaX = targetX - shooterX;
+		deltaY = targetY - shooterY;
+		rotation = Math.atan2(deltaY, deltaX);
+		xtarget = Math.cos(rotation);
+		ytarget = Math.sin(rotation);
+		
+		theBullets.push({
+			active:true,
+			x: shooterX, //updates
+			y: shooterY,
+			speed: 10,
+			xtarget: xtarget,
+			ytarget: ytarget,
+			w: 5,
+			h: 5,
+			color: 'red',
+			angle: rotation
+		});
+		
+		// if (shotSwitcher === 1) {
+		// 	laser1.currentTime = 0.1;
+		// 	laser1.play();
+		// }
+		
+		// if (shotSwitcher === 2) {
+		// laser2.currentTime = 0.1;
+		// 	laser2.play();
+		// }
+		
+		// if (shotSwitcher === 3) {
+		// laser3.currentTime = 0.1;
+		// 	laser3.play();
+		// }
+		// if (shotSwitcher === 4) {
+		// laser4.currentTime = 0.1;
+		// 	laser4.play();
+		// }
+		// if (shotSwitcher === 5) {
+		// laser5.currentTime = 0.1;
+		// 	laser5.play();
+		// }
+		// if (shotSwitcher === 6) {
+		// laser6.currentTime = 0.1;
+		// 	laser6.play();
+		// }
+
+		// shotSwitcher++;
+		
+		// if (shotSwitcher === 7) {
+		// 	shotSwitcher = 1;
+		// }
+		
+	}
+}
+
+function bulletsMove() {
+	theBullets.forEach( function(i, j) {
+		i.x += i.xtarget * i.speed;
+		i.y += i.ytarget * i.speed;
+	});
+}
+
+function bulletsDraw() {
+	theBullets.forEach( function(i, j) {
+		context.beginPath();
+		context.save();
+		context.fillStyle = i.color;
+		context.drawImage(bulletIMG,i.x,i.y);
+		//context.rect(i.x, i.y, i.w, i.h);
+		//context.fill();
+	});
+}
+
+// function checkBulletHits() {
+// 	if (theBullets.length > 0 && theBadGuys.length > 0) {
+// 		for (j = theBullets.length - 1; j >= 0; j--) {
+// 			for (k = theBadGuys.length - 1; k >= 0; k--) {
+// 				if (collides(theBadGuys[k], theBullets[j])) {
+// 					console.log("collides");
+// 					theBadGuys.splice(k, 1);
+// 					theBullets.splice(j, 1);
+// 					Player1.points += 1;	
+					
+// 					if (boomSwitcher === 1) {
+// 					boom1.play();
+// 					}
+					
+// 					if (boomSwitcher === 2) {
+// 					boom2.play();
+// 					}
+					
+// 					if (boomSwitcher === 3) {
+// 					boom3.play();
+// 					}
+// 					if (boomSwitcher === 4) {
+// 					boom4.play();
+// 					}
+// 					if (boomSwitcher === 5) {
+// 					boom5.play();
+// 					}
+// 					if (boomSwitcher === 6) {
+// 					boom6.play();
+// 					}
+
+// 					boomSwitcher++;
+					
+// 					if (boomSwitcher === 7) {
+// 					boomSwitcher = 1;
+// 					}	
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 //TO DO
 /*
 1. fix all the collisions to make it so you cant go into a wall and glitch through by moving in the opposite direction ....I know how to fix this but its way too tedious and time consuming for friday
