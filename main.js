@@ -67,6 +67,15 @@ var smg = {
 	runSpeedModifier:1,//how much it decreases ms by
     isEquipped:false
 };
+var sg = {
+	name:"sg",
+    damage:10,
+    clipAmmo:12,
+    maxAmmo:40,
+	fireRate:0.75,//how many times per second can you shoot
+	runSpeedModifier:2,//how much it decreases ms by
+    isEquipped:false
+};
 var ar = {
 	name:"ar",
     damage:26,
@@ -88,6 +97,7 @@ var sniper = {
 var guns = {
 	pistol:pistol,
 	smg:smg,
+	sg:sg,
 	ar:ar,
 	sniper:sniper
 };
@@ -96,6 +106,8 @@ function gunEquipped(){
 		return guns.pistol;
 	} else if(guns.smg.isEquipped==true){
 		return guns.smg;
+	} else if(guns.sg.isEquipped==true){
+		return guns.sg;
 	} else if(guns.ar.isEquipped==true){
 		return guns.ar;
 	} else if(guns.sniper.isEquipped==true){
@@ -328,6 +340,8 @@ function keyHandler(e){
 		changeWeapon(3);
 	} else if (keyStates.indexOf( 52 ) > -1){
 		changeWeapon(4);
+	} else if (keyStates.indexOf( 53 ) > -1){
+		changeWeapon(5);
 	} else if (keyStates.indexOf( 192 ) > -1){
 		cheatConsole();
 	}
@@ -374,6 +388,7 @@ function changeWeapon(wW){
 		case 1:
 			guns.pistol.isEquipped=true;
 			guns.smg.isEquipped=false;
+			guns.sg.isEquipped=false;
 			guns.ar.isEquipped=false;
 			guns.sniper.isEquipped=false;
 			clearInterval(pSTI);
@@ -383,6 +398,7 @@ function changeWeapon(wW){
 		case 2:
 			guns.pistol.isEquipped=false;
 			guns.smg.isEquipped=true;
+			guns.sg.isEquipped=false;
 			guns.ar.isEquipped=false;
 			guns.sniper.isEquipped=false;
 			clearInterval(pSTI);
@@ -392,7 +408,8 @@ function changeWeapon(wW){
 		case 3:
 			guns.pistol.isEquipped=false;
 			guns.smg.isEquipped=false;
-			guns.ar.isEquipped=true;
+			guns.sg.isEquipped=true;
+			guns.ar.isEquipped=false;
 			guns.sniper.isEquipped=false;
 			clearInterval(pSTI);
 			tTD=(1000/gunEquipped().fireRate);
@@ -401,6 +418,17 @@ function changeWeapon(wW){
 		case 4:
 			guns.pistol.isEquipped=false;
 			guns.smg.isEquipped=false;
+			guns.sg.isEquipped=false;
+			guns.ar.isEquipped=true;
+			guns.sniper.isEquipped=false;
+			clearInterval(pSTI);
+			tTD=(1000/gunEquipped().fireRate);
+			pSTI = setInterval(pST, 200);
+			break;
+		case 5:
+			guns.pistol.isEquipped=false;
+			guns.smg.isEquipped=false;
+			guns.sg.isEquipped=false;
 			guns.ar.isEquipped=false;
 			guns.sniper.isEquipped=true;
 			clearInterval(pSTI);
@@ -410,6 +438,7 @@ function changeWeapon(wW){
 		default:
 			guns.pistol.isEquipped=false;
 			guns.smg.isEquipped=false;
+			guns.sg.isEquipped=false;
 			guns.ar.isEquipped=false;
 			guns.sniper.isEquipped=false;
 			clearInterval(pSTI);
@@ -583,24 +612,35 @@ function hudU(){
 		case "pistol":
 			document.getElementById('pistolHUD').style.color="green";
 			document.getElementById('smgHUD').style.color="black";
+			document.getElementById('sgHUD').style.color="black";
 			document.getElementById('arHUD').style.color="black";
 			document.getElementById('sniperHUD').style.color="black";
 			break;
 		case "smg":
 			document.getElementById('pistolHUD').style.color="black";
 			document.getElementById('smgHUD').style.color="green";
+			document.getElementById('sgHUD').style.color="black";
+			document.getElementById('arHUD').style.color="black";
+			document.getElementById('sniperHUD').style.color="black";
+			break;
+		case "sg":
+			document.getElementById('pistolHUD').style.color="black";
+			document.getElementById('smgHUD').style.color="black";
+			document.getElementById('sgHUD').style.color="green";
 			document.getElementById('arHUD').style.color="black";
 			document.getElementById('sniperHUD').style.color="black";
 			break;
 		case "ar":
 			document.getElementById('pistolHUD').style.color="black";
 			document.getElementById('smgHUD').style.color="black";
+			document.getElementById('sgHUD').style.color="black";
 			document.getElementById('arHUD').style.color="green";
 			document.getElementById('sniperHUD').style.color="black";
 			break;
 		case "sniper":
 			document.getElementById('pistolHUD').style.color="black";
 			document.getElementById('smgHUD').style.color="black";
+			document.getElementById('sgHUD').style.color="black";
 			document.getElementById('arHUD').style.color="black";
 			document.getElementById('sniperHUD').style.color="green";
 		
@@ -716,6 +756,30 @@ function lookAngle(){
 	console.log(angle);
 	return angle;
 };
+function sgSpread(){
+	var ttl=0;
+	var avg=0;
+	var temp=0;
+	var nop=0;
+	for(var i=0;i<4;i++){
+		ttl+=Math.ceil(Math.random()*100);
+	}
+	for(var i=0;i<4;i++){
+		temp=Math.ceil(Math.random()*100);
+		if (temp>50){
+			nop++;
+		} else {
+			nop--;
+		}
+	}
+	if (nop>-1){
+		avg=Math.ceil(ttl/5);
+	} else {
+		avg=Math.ceil(ttl/5)*-1;
+	}
+	console.log(avg);
+	return avg;
+};
 function shoot(px,py,mx,my){
 	if(ammo>0){
 		if(mx>=enemies[0].xPos && mx<=(enemies[0].xPos+32) && my>=enemies[0].yPos && my<=(enemies[0].yPos+32)){
@@ -731,7 +795,15 @@ function shoot(px,py,mx,my){
 			enemies[3].health-=gunEquipped().damage;
 		}
 		console.log(gunEquipped());
-		createBullet(mx, my, pXpos + (32 / 2), pYpos + (32 / 2));
+		if (gunEquipped().name=="sg"){
+			createBullet(mx, my+sgSpread(), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(), pXpos + (32 / 2), pYpos + (32 / 2));
+		} else {
+			createBullet(mx, my, pXpos + (32 / 2), pYpos + (32 / 2));
+		}
 		ammo--;
 		tTD=(1000/gunEquipped().fireRate);
 		//animateFromTo(pXpos,pYpos,mx,my);
