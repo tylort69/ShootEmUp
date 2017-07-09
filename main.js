@@ -228,29 +228,34 @@ function dangerArea() {
     if (pYpos <= 458 && pYpos > 132 && pXpos >= 343 && pXpos <= 708) {
         if(enemy1.isAlive && enemy1.tTDE==0){
         	health -= enemies[0].gunEquipped.damage;
+			createBullet(pXpos + (32 / 2), pYpos + (32 / 2), enemy1.xPos+ (32 / 2), enemy1.yPos + (32 / 2));
 			enemy1.tTDE=(1000/enemies[0].gunEquipped.fireRate);
 		}
     }
     if (pYpos <= 400 && pYpos > 132 && pXpos >= 763 && pXpos <= 825) {
         if(enemy2.isAlive && enemy2.tTDE==0){
             health -= enemies[1].gunEquipped.damage;
+			createBullet(pXpos + (32 / 2), pYpos + (32 / 2), enemy2.xPos+ (32 / 2), enemy2.yPos + (32 / 2));
 			enemy2.tTDE=(1000/enemies[1].gunEquipped.fireRate);
         }
     }
     if (pYpos <= 617  && pYpos > 401 && pXpos >= 763 && pXpos <= 1042) {
         if(enemy2.isAlive && enemy2.tTDE==0){
             health -= enemies[1].gunEquipped.damage;
+			createBullet(pXpos + (32 / 2), pYpos + (32 / 2), enemy2.xPos+ (32 / 2), enemy2.yPos + (32 / 2));
 			enemy2.tTDE=(1000/enemies[1].gunEquipped.fireRate);
         }
     }
     if (pYpos <= 101 && pYpos > 0 && pXpos >= 343 && pXpos <= 1368) {
         if(enemy4.isAlive && enemy4.tTDE==0){
             health -= enemies[3].gunEquipped.damage;
+			createBullet(pXpos + (32 / 2), pYpos + (32 / 2), enemy4.xPos+ (32 / 2), enemy4.yPos + (32 / 2));
 			enemy4.tTDE=(1000/enemies[3].gunEquipped.fireRate);
         }    }
     if (pYpos <= 768 && pYpos > 0 && pXpos >= 1102 && pXpos <= 1368) {
         if(enemy3.isAlive && enemy3.tTDE==0){
             health -= enemies[2].gunEquipped.damage;
+			createBullet(pXpos + (32 / 2), pYpos + (32 / 2), enemy3.xPos+ (32 / 2), enemy3.yPos + (32 / 2));
 			enemy3.tTDE=(1000/enemies[2].gunEquipped.fireRate);
         }
     }
@@ -615,28 +620,48 @@ function render(){
 	//---------------------------------------------------------------------Leron's Work------------------------------------------------------------------------------------------------
 	//Enemy 1
 	if(enemies[0].health>0){
+		context.save();
+    	context.translate(enemies[0].xPos+16, enemies[0].yPos+16); // change origin
+    	context.rotate(180*Math.PI/180+Math.atan2(((pYpos+16) - enemies[0].yPos+16), ((pXpos+16) - enemies[0].xPos+16)));
+		context.translate(-enemies[0].xPos-16, -enemies[0].yPos-16);
 		context.drawImage(enemy1IMG, enemies[0].xPos, enemies[0].yPos);
+		context.restore();
 		context.fillText("Health: " + enemies[0].health, enemies[0].xPos-14, enemies[0].yPos-10);
 	} else if(enemies[0].health<=0){
 		enemies[0].isAlive=false;
 	}
 	//Enemy 2
 	if(enemies[1].health>0){
+		context.save();
+    	context.translate(enemies[1].xPos+16, enemies[1].yPos+16); // change origin
+    	context.rotate(180*Math.PI/180+Math.atan2(((pYpos+16) - enemies[1].yPos+16), ((pXpos+16) - enemies[1].xPos+16)));
+		context.translate(-enemies[1].xPos-16, -enemies[1].yPos-16);
 		context.drawImage(enemy2IMG, enemies[1].xPos, enemies[1].yPos);
+		context.restore();
 		context.fillText("Health: " + enemies[1].health, enemies[1].xPos-14, enemies[1].yPos-10);
 	} else if(enemies[1].health<=0){
 		enemies[1].isAlive=false;
 	}
 	//Enemy 3
 	if(enemies[2].health>0){
+		context.save();
+    	context.translate(enemies[2].xPos+16, enemies[2].yPos+16); // change origin
+    	context.rotate(Math.atan2(((pYpos+16) - enemies[2].yPos+16), ((pXpos+16) - enemies[2].xPos+16)));
+		context.translate(-enemies[2].xPos-16, -enemies[2].yPos-16);
 		context.drawImage(enemy3IMG, enemies[2].xPos, enemies[2].yPos);
-		context.fillText("Health: " + enemies[2].health, enemies[2].xPos-14, enemies[2].yPos-10);
+		context.restore();
+		context.fillText("Health: " + enemies[2].health, enemies[2].xPos-14, enemies[2].yPos-32);
 	} else if(enemies[2].health<=0){
 		enemies[2].isAlive=false;
 	}
 	//Enemy 4
 	if(enemies[3].health>0){
+		context.save();
+    	context.translate(enemies[3].xPos+16, enemies[3].yPos+16); // change origin
+    	context.rotate(180*Math.PI/180+Math.atan2(((pYpos+16) - enemies[3].yPos+16), ((pXpos+16) - enemies[3].xPos+16)));
+		context.translate(-enemies[3].xPos-16, -enemies[3].yPos-16);
 		context.drawImage(enemy4IMG, enemies[3].xPos, enemies[3].yPos);
+		context.restore();
 		context.fillText("Health: " + enemies[3].health, enemies[3].xPos-14, enemies[3].yPos-10);
 	} else if(enemies[3].health<=0){
 		enemies[3].isAlive=false;
