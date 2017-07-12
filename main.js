@@ -45,6 +45,7 @@ var xtarget = 0;
 var ytarget = 0;
 var theBullets = [];
 var deltaX, deltaY, newAngle = 0;
+var fLO=true;
 /////////////////////////////////////////
 /////////////
 //    GUNS //
@@ -53,45 +54,60 @@ var pistol = {
 	name:"pistol",
     damage:8,
     clipAmmo:7,
+	cClipAmmo:7,
     maxAmmo:20,
+	cMaxAmmo:20,
 	fireRate:1,//how many times per second can you shoot
 	runSpeedModifier:0,//how much it decreases ms by
+	accuracyModifier:5,
     isEquipped:true
 };
 var smg = {
 	name:"smg",
     damage:3,
     clipAmmo:50,
+	cClipAmmo:50,
     maxAmmo:200,
+	cMaxAmmo:200,
 	fireRate:12,//how many times per second can you shoot
 	runSpeedModifier:1,//how much it decreases ms by
+	accuracyModifier:50,
     isEquipped:false
 };
 var sg = {
 	name:"sg",
     damage:10,
     clipAmmo:12,
+	cClipAmmo:12,
     maxAmmo:40,
+	cMaxAmmo:40,
 	fireRate:0.75,//how many times per second can you shoot
 	runSpeedModifier:2,//how much it decreases ms by
+	accuracyModifier:200,
     isEquipped:false
 };
 var ar = {
 	name:"ar",
     damage:26,
     clipAmmo:30,
+	cClipAmmo:30,
     maxAmmo:70,
+	cMaxAmmo:70,
 	fireRate:4,//how many times per second can you shoot
 	runSpeedModifier:3,//how much it decreases ms by
+	accuracyModifier:15,
     isEquipped:false
 };
 var sniper = {
 	name:"sniper",
     damage:69,
     clipAmmo:5,
+	cClipAmmo:5,
     maxAmmo:15,
+	cMaxAmmo:15,
 	fireRate:(1/3),//how many times per second can you shoot
 	runSpeedModifier:5,//how much it decreases ms by
+	accuracyModifier:1,
     isEquipped:false
 };
 var guns = {
@@ -344,6 +360,22 @@ function keyHandler(e){
 		changeWeapon(5);
 	} else if (keyStates.indexOf( 192 ) > -1){
 		cheatConsole();
+	} else if (keyStates.indexOf( 70 ) > -1){
+		tFL();
+	}
+};
+function reLoad(){
+	var temp =0;
+	if(gunEquipped().maxAmmo>=gunEquipped().cClipAmmo&&gunEquipped().clipAmmo>0){
+		gunEquipped().maxAmmo-=(gunEquipped().cClipAmmo-gunEquipped().clipAmmo);
+		gunEquipped().clipAmmo=gunEquipped().cClipAmmo;
+	}else if(gunEquipped().maxAmmo>=gunEquipped().cClipAmmo){
+		gunEquipped().clipAmmo=gunEquipped().cClipAmmo;
+		gunEquipped().maxAmmo-=gunEquipped().cClipAmmo;
+	}else if(gunEquipped().clipAmmo<gunEquipped().cClipAmmo && !gunEquipped().maxAmmo<1){
+		temp=gunEquipped().cClipAmmo-gunEquipped().clipAmmo;
+		gunEquipped().maxAmmo-=temp;
+		gunEquipped().clipAmmo+=temp;
 	}
 };
 function cheatConsole(){
@@ -394,6 +426,7 @@ function changeWeapon(wW){
 			clearInterval(pSTI);
 			tTD=(1000/gunEquipped().fireRate);
 			pSTI = setInterval(pST, 200);
+			ammo=gunEquipped().maxAmmo;
 			break;
 		case 2:
 			guns.pistol.isEquipped=false;
@@ -404,6 +437,7 @@ function changeWeapon(wW){
 			clearInterval(pSTI);
 			tTD=(1000/gunEquipped().fireRate);
 			pSTI = setInterval(pST, 200);
+			ammo=gunEquipped().maxAmmo;
 			break;
 		case 3:
 			guns.pistol.isEquipped=false;
@@ -414,6 +448,7 @@ function changeWeapon(wW){
 			clearInterval(pSTI);
 			tTD=(1000/gunEquipped().fireRate);
 			pSTI = setInterval(pST, 200);
+			ammo=gunEquipped().maxAmmo;
 			break;
 		case 4:
 			guns.pistol.isEquipped=false;
@@ -424,6 +459,7 @@ function changeWeapon(wW){
 			clearInterval(pSTI);
 			tTD=(1000/gunEquipped().fireRate);
 			pSTI = setInterval(pST, 200);
+			ammo=gunEquipped().maxAmmo;
 			break;
 		case 5:
 			guns.pistol.isEquipped=false;
@@ -434,6 +470,7 @@ function changeWeapon(wW){
 			clearInterval(pSTI);
 			tTD=(1000/gunEquipped().fireRate);
 			pSTI = setInterval(pST, 200);
+			ammo=gunEquipped().maxAmmo;
 			break;
 		default:
 			guns.pistol.isEquipped=false;
@@ -442,6 +479,14 @@ function changeWeapon(wW){
 			guns.ar.isEquipped=false;
 			guns.sniper.isEquipped=false;
 			clearInterval(pSTI);
+			ammo=gunEquipped().maxAmmo;
+	}
+};
+function tFL (){
+	if(fLO){
+		fLO=false;
+	} else {
+		fLO=true;
 	}
 };
 function moveUp(){
@@ -606,10 +651,16 @@ function isSprinting(){
 };
 function hudU(){
 	document.getElementById('playerHealth').innerHTML="Health: "+health;
-	document.getElementById('playerAmmo').innerHTML="Ammo: "+ammo;
+	document.getElementById('playerClipAmmo').innerHTML="Clip Ammo: "+gunEquipped().clipAmmo;
+	document.getElementById('playerAmmo').innerHTML="Ammo: "+gunEquipped().maxAmmo;
 	document.getElementById('playerStamina').innerHTML="Stamina: "+stamina;
+	if(fLO){
+		document.getElementById('playerFlashLight').style.color="yellow";
+	} else {
+		document.getElementById('playerFlashLight').style.color="black";
+	}
 	switch (gunEquipped().name){
-		case "pistol":
+		case "pistol":1
 			document.getElementById('pistolHUD').style.color="green";
 			document.getElementById('smgHUD').style.color="black";
 			document.getElementById('sgHUD').style.color="black";
@@ -730,10 +781,12 @@ function render(){
 	//context.rotate(3);
     context.drawImage(playerIMG,pXpos,pYpos);
 	//context.drawImage(fowIMG,0,0);
-	context.translate(pXpos+16,pYpos+16);
-	context.rotate(90*Math.PI/180);
-	context.translate(-pXpos-16,-pYpos-16);	
-	context.drawImage(fLLIMG,pXpos-102,pYpos-256);
+	if(fLO){
+		context.translate(pXpos+16,pYpos+16);
+		context.rotate(90*Math.PI/180);
+		context.translate(-pXpos-16,-pYpos-16);	
+		context.drawImage(fLLIMG,pXpos-102,pYpos-256);
+	}
     context.restore();
 	//context.drawImage(playerIMG, pXpos,pYpos);
 	console.log(pXpos,pYpos);
@@ -756,13 +809,14 @@ function lookAngle(){
 	console.log(angle);
 	return angle;
 };
-function sgSpread(){
+function sgSpread(iA){
+	var inAccuracyModifier = iA;
 	var ttl=0;
 	var avg=0;
 	var temp=0;
 	var nop=0;
 	for(var i=0;i<4;i++){
-		ttl+=Math.ceil(Math.random()*100);
+		ttl+=Math.ceil(Math.random()*inAccuracyModifier);
 	}
 	for(var i=0;i<4;i++){
 		temp=Math.ceil(Math.random()*100);
@@ -781,7 +835,7 @@ function sgSpread(){
 	return avg;
 };
 function shoot(px,py,mx,my){
-	if(ammo>0){
+	if(gunEquipped().clipAmmo>0){
 		if(mx>=enemies[0].xPos && mx<=(enemies[0].xPos+32) && my>=enemies[0].yPos && my<=(enemies[0].yPos+32)){
 			enemies[0].health-=gunEquipped().damage;
 		}
@@ -796,15 +850,21 @@ function shoot(px,py,mx,my){
 		}
 		console.log(gunEquipped());
 		if (gunEquipped().name=="sg"){
-			createBullet(mx, my+sgSpread(), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
 		} else {
 			createBullet(mx, my, pXpos + (32 / 2), pYpos + (32 / 2));
 		}
 		ammo--;
+		gunEquipped().clipAmmo--;
 		tTD=(1000/gunEquipped().fireRate);
 		//animateFromTo(pXpos,pYpos,mx,my);
 	}
@@ -970,10 +1030,10 @@ function bulletsDraw() {
 // 		}
 // 	}
 // }
+
 //TO DO
 /*
 1. fix all the collisions to make it so you cant go into a wall and glitch through by moving in the opposite direction ....I know how to fix this but its way too tedious and time consuming for friday
 2. fix the shooting
-3. make the enemies shoot
 4. make the bullets stop when they hit a wall
 */

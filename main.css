@@ -24,10 +24,16 @@
 	list-style-image: url('./Assets/images/heart.png');
 }
 #playerAmmo{
-	list-style-image: url('./Assets/images/gun.png');
+	list-style-image: url('./Assets/images/ammoStockPile.png');
 }
 #playerStamina{
 	list-style-image: url('./Assets/images/lightning.png');
+}
+#playerClipAmmo{
+	list-style-image: url('./Assets/images/ammoClip.png');
+}
+#playerFlashLight{
+	list-style-image: url('./Assets/images/fL.png');
 }
 @font-face {
     font-family: "sDAFS";
