@@ -292,76 +292,69 @@ function dangerArea() {
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-window.addEventListener('keyup', function(e) {var pos = null; if( (pos = keyStates.indexOf( e.keyCode )) > -1 ) keyStates.splice( pos, 1 ); }, false);
-window.addEventListener("keydown", keyHandler, false);
+window.addEventListener("keydown", function (e) {
+    keyStates[e.keyCode] = true;
+});
+window.addEventListener("keyup", function (e) {
+    keyStates[e.keyCode] = false;
+});
+
 var renderI = setInterval(render, 16.66);
 var hudI = setInterval(hudU, 16.66);
 var staminaI = setInterval(staminaRefill, 500);
 function keyHandler(e){
 	console.log(is);
-	is=false;
+	is=false; 
 	ms=cms;
 	//alert(e.keyCode);
-	if (keyStates.indexOf( e.keyCode ) > -1){
+	/* if (keyStates.indexOf( e.keyCode ) > -1){
 		console.log("key already down");
 	} else {
 		keyStates.push( e.keyCode );
-	}
+	} */
 	console.log("keys dedected down");
 	for (var i=0; i<keyStates.length; i++){
 		console.log(i);
 		console.log(keyStates[i]);
 	}
-	if(e.keyCode==32){
-		shoot();
-	} else if ((keyStates.indexOf( 87 ) > -1) && (keyStates.indexOf( 68 ) > -1)){
-		moveUp();
-		moveRight();
-	} else if (keyStates.indexOf( 87 ) > -1 && keyStates.indexOf( 65 ) > -1){
-		moveUp();
-		moveLeft();
-	} else if (keyStates.indexOf( 83 ) > -1 && keyStates.indexOf( 65 ) > -1){
-		moveDown();
-		moveLeft();
-	} else if (keyStates.indexOf( 83 ) > -1 && keyStates.indexOf( 68 ) > -1){
-		moveDown();
-		moveRight();
-	} else if (keyStates.indexOf( 87 ) > -1 && keyStates.indexOf( 16 ) > -1){
-		is=true;
-		moveUp();
-	} else if (keyStates.indexOf( 65 ) > -1 && keyStates.indexOf( 16 ) > -1){
-		is=true;
-		moveLeft();
-	} else if (keyStates.indexOf( 68 ) > -1 && keyStates.indexOf( 16 ) > -1){
-		is=true;
-		moveRight();
-	} else if (keyStates.indexOf( 83 ) > -1 && keyStates.indexOf( 16 ) > -1){
-		is=true;
-		moveDown();
-	} else if (keyStates.indexOf( 87 ) > -1){
-		moveUp();
-	} else if (keyStates.indexOf( 65 ) > -1){
-		moveLeft();
-	} else if (keyStates.indexOf( 68 ) > -1){
-		moveRight();
-	} else if (keyStates.indexOf( 83 ) > -1){
-		moveDown();
-	} else if (keyStates.indexOf( 82 ) > -1){
-		reLoad();
-	} else if (keyStates.indexOf( 49 ) > -1){
-		changeWeapon(1);
-	} else if (keyStates.indexOf( 50 ) > -1){
-		changeWeapon(2);
-	} else if (keyStates.indexOf( 51 ) > -1){
-		changeWeapon(3);
-	} else if (keyStates.indexOf( 52 ) > -1){
-		changeWeapon(4);
-	} else if (keyStates.indexOf( 53 ) > -1){
-		changeWeapon(5);
-	} else if (keyStates.indexOf( 192 ) > -1){
-		cheatConsole();
-	} else if (keyStates.indexOf( 70 ) > -1){
-		tFL();
+	if (keyStates[32]) {
+	    shoot();
+	}  if (keyStates[87] && keyStates[16]) {
+	    is = true;
+	    moveUp();
+	} if (keyStates[65] && keyStates[16]) {
+	    is = true;
+	    moveLeft();
+	} if (keyStates[68] && keyStates[16]) {
+	    is = true;
+	    moveRight();
+	} if (keyStates[83] && keyStates[16]) {
+	    is = true;
+	    moveDown();
+	} if (keyStates[87]) {
+	    moveUp();
+	} if (keyStates[65]) {
+	    moveLeft();
+	} if (keyStates[68]) {
+	    moveRight();
+	} if (keyStates[83]) {
+	    moveDown();
+	} if (keyStates[82]) {
+	    reLoad();
+	} if (keyStates[49]) {
+	    changeWeapon(1);
+	} if (keyStates[50]) {
+	    changeWeapon(2);
+	} if (keyStates[51]) {
+	    changeWeapon(3);
+	} if (keyStates[52]) {
+	    changeWeapon(4);
+	} if (keyStates[53]) {
+	    changeWeapon(5);
+	} if (keyStates[192]) {
+	    cheatConsole();
+	} if (keyStates[70]) {
+	    tFL();
 	}
 };
 function reLoad(){
@@ -796,7 +789,8 @@ function render(){
 	// BULLETS
 	bulletsMove();
 	bulletsDraw();
-	//checkBulletHits();
+    //checkBulletHits();
+	keyHandler();
 };
 function lookAngle(){
 	var a = pXpos - mx;
@@ -988,7 +982,6 @@ function bulletsDraw() {
 		//context.fill();
 	});
 }
-
 // function checkBulletHits() {
 // 	if (theBullets.length > 0 && theBadGuys.length > 0) {
 // 		for (j = theBullets.length - 1; j >= 0; j--) {
