@@ -317,8 +317,8 @@ function keyHandler(e){
 	} */
 	console.log("keys dedected down");
 	for (var i=0; i<keyStates.length; i++){
-		console.log(i);
-		console.log(keyStates[i]);
+		//console.log(i);
+		//console.log(keyStates[i]);
 	}
 	if (keyStates[32]) {
 	    shoot(pXpos,pYpos,mx,my);
@@ -792,9 +792,10 @@ function render(){
 	// BULLETS
 	bulletsMove();
 	bulletsDraw();
-    //checkBulletHits();
+    checkBulletHits();
 	keyHandler();
 	mmF();
+	console.log("NUMBER OF BULLETS "+theBullets.length);
 };
 function lookAngle(){
 	var a = pXpos - mx;
@@ -835,16 +836,16 @@ function sgSpread(iA){
 function shoot(px,py,mx,my){
 	if(gunEquipped().clipAmmo>0){
 		if(mx>=enemies[0].xPos && mx<=(enemies[0].xPos+32) && my>=enemies[0].yPos && my<=(enemies[0].yPos+32)){
-			enemies[0].health-=gunEquipped().damage;
+			//enemies[0].health-=gunEquipped().damage;
 		}
 		if(mx>=enemies[1].xPos && mx<=(enemies[1].xPos+32) && my>=enemies[1].yPos && my<=(enemies[1].yPos+32)){
-			enemies[1].health-=gunEquipped().damage;
+			//enemies[1].health-=gunEquipped().damage;
 		}
 		if(mx>=enemies[2].xPos && mx<=(enemies[2].xPos+64) && my>=enemies[2].yPos && my<=(enemies[2].yPos+64)){
-			enemies[2].health-=gunEquipped().damage;
+			//enemies[2].health-=gunEquipped().damage;
 		}
 		if(mx>=enemies[3].xPos && mx<=(enemies[3].xPos+32) && my>=enemies[3].yPos && my<=(enemies[3].yPos+32)){
-			enemies[3].health-=gunEquipped().damage;
+			//enemies[3].health-=gunEquipped().damage;
 		}
 		console.log(gunEquipped());
 		if (gunEquipped().name=="sg"){
@@ -1000,6 +1001,39 @@ function bulletsDraw() {
 		//context.fill();
 	});
 }
+function checkBulletHits(){
+	for(var i=0; i<theBullets.length;i++){
+		for (var j=0; j<enemies.length;j++){
+			if(theBullets[i].x>=enemies[j].xPos&&theBullets[i].x<=enemies[j].xPos+32&&theBullets[i].y>=enemies[j].yPos&&theBullets[i].y<=enemies[j].yPos+32){
+				enemies[j].health-=gunEquipped().damage;
+				theBullets.splice(i,1);
+				//enemies.splice(j,1);
+				console.log("ENEMY DAMAGED");
+			}
+			if (theBullets[i].y > 590 && theBullets[i].y < 710 && theBullets[i].x > 340 && theBullets[i].x < 600) {
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y > 590 && theBullets[i].y < 672 && theBullets[i].x > 667 && theBullets[i].x < 764) {
+				theBullets.splice(i,1);
+			//} else if (pYpos < 474 && pYpos > 430 && pXpos > 343 && pXpos < 430) {
+			// pYpos = 430;
+			//} else if (pYpos < 474 && pYpos > 430 && pXpos >= 470 && pXpos <= 766) {
+			// pYpos = 430;
+			} else if (theBullets[i].y>360 && theBullets[i].y<402 && theBullets[i].x> 847 && theBullets[i].x< 1090){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y>=207 && theBullets[i].y<672 && theBullets[i].x>=707 && theBullets[i].x<=762){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y>=90 && theBullets[i].y<107 && theBullets[i].x>=343 && theBullets[i].x<=953){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y>=90 && theBullets[i].y<107 && theBullets[i].x>=1023 && theBullets[i].x<1181){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y >= 220 && theBullets[i].y < 720 && theBullets[i].x > 232 && theBullets[i].x < 325) {
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y>=canvas.height-32){
+				theBullets.splice(i,1);
+			}
+		}
+	}
+};
 // function checkBulletHits() {
 // 	if (theBullets.length > 0 && theBadGuys.length > 0) {
 // 		for (j = theBullets.length - 1; j >= 0; j--) {
