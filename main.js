@@ -12,9 +12,11 @@ mapIMG.src = 'Assets/images/map2.png';
 var bulletIMG = new Image();
 bulletIMG.src = 'Assets/images/bullet.png';
 var youDiedIMG = new Image();
-youDiedIMG.src = 'Assets/images/youDied.jpg';
+youDiedIMG.src = 'Assets/images/youDied.png';
 var youWonIMG = new Image();
-youWonIMG.src = 'Assets/images/youWon.jpg';
+youWonIMG.src = 'Assets/images/youWon.png';
+var mMIMG = new Image();
+mMIMG.src = 'Assets/images/mainMenu.jpg';
 var fowIMG = new Image();
 fowIMG.src = 'Assets/images/NightFOW.png';
 var bGM = new Audio('Assets/sounds/music/4ware.mp3');
@@ -46,6 +48,7 @@ var ytarget = 0;
 var theBullets = [];
 var deltaX, deltaY, newAngle = 0;
 var fLO=true;
+var mm=true;
 /////////////////////////////////////////
 /////////////
 //    GUNS //
@@ -791,6 +794,7 @@ function render(){
 	bulletsDraw();
     //checkBulletHits();
 	keyHandler();
+	mmF();
 };
 function lookAngle(){
 	var a = pXpos - mx;
@@ -899,6 +903,19 @@ function lostGame(){
 //     createjs.Ticker.setFPS(60);
 //     createjs.Ticker.addEventListener("tick", canvas);
 // };
+function mmF(){
+	if (mm){
+		context.drawImage(mMIMG,0,0);
+		console.log("Main Menu Is Active");
+		document.getElementById("gameCanvas").style.cursor="default";
+		context.fillText("Play", canvas.width/2, (canvas.height/2)-canvas.height/4);
+		if(mouseDown && mx>canvas.width/2 && mx<(canvas.width/2)+20 && my>(canvas.height/2)-canvas.height/4 && my<((canvas.height/2)-canvas.height/4)+20){
+			mm=false;
+		}
+	} else if(!mm){
+		document.getElementById("gameCanvas").style.cursor="none";
+	}
+};
 function pST (){
 	if(tTD>0&&tTD-20>0){
 		tTD -= 20;
