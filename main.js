@@ -321,7 +321,7 @@ function keyHandler(e){
 		console.log(keyStates[i]);
 	}
 	if (keyStates[32]) {
-	    shoot();
+	    shoot(pXpos,pYpos,mx,my);
 	}  if (keyStates[87] && keyStates[16]) {
 	    is = true;
 	    moveUp();
@@ -481,7 +481,7 @@ function changeWeapon(wW){
 function tFL (){
 	if(fLO){
 		fLO=false;
-	} else {
+	} else if(!fLO) {
 		fLO=true;
 	}
 };
@@ -908,6 +908,7 @@ function mmF(){
 		context.drawImage(mMIMG,0,0);
 		console.log("Main Menu Is Active");
 		document.getElementById("gameCanvas").style.cursor="default";
+		context.font="30px Arial";
 		context.fillText("Play", canvas.width/2, (canvas.height/2)-canvas.height/4);
 		if(mouseDown && mx>canvas.width/2 && mx<(canvas.width/2)+20 && my>(canvas.height/2)-canvas.height/4 && my<((canvas.height/2)-canvas.height/4)+20){
 			mm=false;
