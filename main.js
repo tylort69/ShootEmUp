@@ -17,11 +17,27 @@ var youWonIMG = new Image();
 youWonIMG.src = 'Assets/images/youWon.png';
 var mMIMG = new Image();
 mMIMG.src = 'Assets/images/mainMenu.jpg';
+var pBIMG = new Image();
+pBIMG.src = 'Assets/images/playBlue.png';
+var pYIMG = new Image();
+pYIMG.src = 'Assets/images/playYellow.png';
+var eBIMG = new Image();
+eBIMG.src = 'Assets/images/exitBlue.png';
+var eYIMG = new Image();
+eYIMG.src = 'Assets/images/exitYellow.png';
+var nMIMG = new Image();
+nMIMG.src = 'Assets/images/notMute.png';
+var mIMG = new Image();
+mIMG.src = 'Assets/images/mute.png';
 var fowIMG = new Image();
 fowIMG.src = 'Assets/images/NightFOW.png';
 var bGM = new Audio('Assets/sounds/music/4ware.mp3');
 bGM.volume=0.25;
 bGM.play();
+var hLPB=true;
+var mON=false;
+var pBY=false;
+var eBY=false;
 var pXpos=150;
 var pYpos=300;
 var mx=0;
@@ -479,6 +495,7 @@ function changeWeapon(wW){
 	}
 };
 function tFL (){
+	keyStates=[];
 	if(fLO){
 		fLO=false;
 	} else if(!fLO) {
@@ -619,7 +636,7 @@ canvas.addEventListener("mousedown", function(evt) {
     console.log( 'Click Detected, Mouse position: ' + mousePos.x + ',' + mousePos.y);
 	mx=mousePos.x;
 	my=mousePos.y;
-	if (ammo>0 && pST()==0){
+	if ( gunEquipped().clipAmmo>0 && pST()==0 && !mm){
 		shoot(pXpos,pYpos,mx,my);
 	}
 }, false);
@@ -692,7 +709,7 @@ function hudU(){
 			document.getElementById('sniperHUD').style.color="green";
 		
 	}
-	if (mouseDown==true && ammo>0 && pST()==0){
+	if (mouseDown==true && gunEquipped().clipAmmo>0 && pST()==0 && !mm){
 		shoot(pXpos,pYpos,mx,my);
 	}
 	
@@ -909,10 +926,42 @@ function mmF(){
 		context.drawImage(mMIMG,0,0);
 		console.log("Main Menu Is Active");
 		document.getElementById("gameCanvas").style.cursor="default";
-		context.font="30px Arial";
-		context.fillText("Play", canvas.width/2, (canvas.height/2)-canvas.height/4);
-		if(mouseDown && mx>canvas.width/2 && mx<(canvas.width/2)+20 && my>(canvas.height/2)-canvas.height/4 && my<((canvas.height/2)-canvas.height/4)+20){
+		//PLAY BTN
+		if(mx>(canvas.width/2)-150 && mx<(canvas.width/2)-150+pBIMG.width && my>((canvas.height/2)-canvas.height/4)-100 && my<((canvas.height/2)-canvas.height/4)-100+pBIMG.height && mouseDown==true){
+			context.drawImage(pYIMG,(canvas.width/2)-150,((canvas.height/2)-canvas.height/4)-100);
 			mm=false;
+		}else if(mx>(canvas.width/2)-150 && mx<(canvas.width/2)-150+pBIMG.width && my>((canvas.height/2)-canvas.height/4)-100 && my<((canvas.height/2)-canvas.height/4)-100+pBIMG.height){
+			context.drawImage(pYIMG,(canvas.width/2)-150,((canvas.height/2)-canvas.height/4)-100);
+			console.log("pBY"+pBY);
+		} else {
+			context.drawImage(pBIMG,(canvas.width/2)-150,((canvas.height/2)-canvas.height/4)-100);
+			hLPB=true;
+		}
+		//EXIT BTN
+		if(mx>(canvas.width/2)-150 && mx<(canvas.width/2)-150+pBIMG.width && my>((canvas.height/2)-canvas.height/4)+20 && my<((canvas.height/2)-canvas.height/4)+20+pBIMG.height && mouseDown==true){
+			context.drawImage(eYIMG,(canvas.width/2)-150,((canvas.height/2)-canvas.height/4)+20);
+			window.close();
+			mm=false;
+		}else if(mx>(canvas.width/2)-150 && mx<(canvas.width/2)-150+pBIMG.width && my>((canvas.height/2)-canvas.height/4)+20 && my<((canvas.height/2)-canvas.height/4)+20+pBIMG.height){
+			context.drawImage(eYIMG,(canvas.width/2)-150,((canvas.height/2)-canvas.height/4)+20);
+			console.log("pBY"+pBY);
+		} else {
+			context.drawImage(eBIMG,(canvas.width/2)-150,((canvas.height/2)-canvas.height/4)+20);
+		}
+		//context.drawImage(pBIMG,(canvas.width/2)-150,((canvas.height/2)-canvas.height/4)-100);
+		//context.drawImage(eBIMG,(canvas.width/2)-150,((canvas.height/2)-canvas.height/4)+20);
+		if(!mON){
+			context.drawImage(nMIMG,(canvas.width/2)+150-nMIMG.width,((canvas.height/2)-canvas.height/4)+140);
+		} else {
+			context.drawImage(mIMG,(canvas.width/2)+150-nMIMG.width,((canvas.height/2)-canvas.height/4)+140);
+		}
+		// context.font="30px Arial";
+		// context.fillText("Play", canvas.width/2, (canvas.height/2)-canvas.height/4);
+		//if(mouseDown && mx>canvas.width/2 && mx<(canvas.width/2)+20 && my>(canvas.height/2)-canvas.height/4 && my<((canvas.height/2)-canvas.height/4)+20){
+		//	mm=false;
+		//}
+		if(mouseDown && mx>(canvas.width/2)+150-mIMG.width && mx<(canvas.width/2)+150+mIMG.width && my>((canvas.height/2)-canvas.height/4)+140 && my<((canvas.height/2)-canvas.height/4)+140+mIMG.height){
+			tmon();
 		}
 	} else if(!mm){
 		document.getElementById("gameCanvas").style.cursor="none";
@@ -1010,6 +1059,7 @@ function checkBulletHits(){
 				//enemies.splice(j,1);
 				console.log("ENEMY DAMAGED");
 			}
+			//DOWN
 			if (theBullets[i].y > 590 && theBullets[i].y < 710 && theBullets[i].x > 340 && theBullets[i].x < 600) {
 				theBullets.splice(i,1);
 			} else if (theBullets[i].y > 590 && theBullets[i].y < 672 && theBullets[i].x > 667 && theBullets[i].x < 764) {
@@ -1028,7 +1078,83 @@ function checkBulletHits(){
 				theBullets.splice(i,1);
 			} else if (theBullets[i].y >= 220 && theBullets[i].y < 720 && theBullets[i].x > 232 && theBullets[i].x < 325) {
 				theBullets.splice(i,1);
-			} else if (theBullets[i].y>=canvas.height-32){
+			} else if (theBullets[i].y>=canvas.height-8){
+				theBullets.splice(i,1);
+			} 
+			//UP
+			if (theBullets[i].y<=107 && theBullets[i].y>90 && theBullets[i].x>=343 && theBullets[i].x<=953){
+				theBullets[i].y = 107;
+			} else if (theBullets[i].y<=107 && theBullets[i].y>90 && theBullets[i].x>=1024 && theBullets[i].x<=1167){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y<=162 && theBullets[i].y>77 && theBullets[i].x<=762 && theBullets[i].x>=709){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y<=400 && theBullets[i].y>377 && theBullets[i].x>=805 && theBullets[i].x<=986){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y<=476 && theBullets[i].y>458 && theBullets[i].x> 343 && theBullets[i].x< 430){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y <= 476 && theBullets[i].y > 458 && theBullets[i].x >= 470 && theBullets[i].x <= 766) {
+				theBullets.splice(i,1);
+			//} else if (pYpos<=672 && pYpos>617 && pXpos>=343 && pXpos<=469){
+				//pYpos = 672;
+			} else if (theBullets[i].y< 635 && theBullets[i].y>617 && theBullets[i].x> 667 && theBullets[i].x <1099){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y <= 287 && theBullets[i].y > 0 && theBullets[i].x >= 77 && theBullets[i].x <= 199) {
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y <= 720 && theBullets[i].y > 635 && theBullets[i].x >= 235 && theBullets[i].x < 600) {
+				theBullets.splice(i,1);
+			} else if (theBullets[i].y<=0){
+				theBullets.splice(i,1);
+			}
+			//LEFT
+			if (theBullets[i].x<=343 && theBullets[i].y<=617 && theBullets[i].x>288){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x<=470 && theBullets[i].y<=671 && theBullets[i].y>=618 && theBullets[i].x>288){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x<=600 && theBullets[i].y>=617 && theBullets[i].x>235 && theBullets[i].y<= 712){
+				theBullets.splice(i,1);
+			//} else if (pXpos<=654 && pYpos>=459 && pYpos<513 && pXpos>288){
+				//pXpos = 654;
+			} else if (theBullets[i].x<=784 && theBullets[i].y>=220 && theBullets[i].y<=617 && theBullets[i].x>765){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x<=784 && theBullets[i].y>=90 && theBullets[i].y<=150 && theBullets[i].x>765){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x<=957 && theBullets[i].y>=78 && theBullets[i].y<=377 && theBullets[i].x>939){
+				theBullets.splice(i,1);
+			//} else if (pXpos<=987 && pYpos>=378 && pYpos<=431 && pXpos>804){
+				//pXpos = 987;
+			} else if (theBullets[i].x<=1183 && theBullets[i].y>=90 && theBullets[i].y<=626 && theBullets[i].x>1170){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x <= 204 && theBullets[i].y >= 0 && theBullets[i].y <= 286 && theBullets[i].x > 60) {
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x<=0){
+				theBullets.splice(i,1);
+			}
+			//RIGHT
+			if (theBullets[i].x>=288 && pYpos<672 && theBullets[i].x<343){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x >= 232 && theBullets[i].y < 720 && theBullets[i].y > 210 && theBullets[i].x < 343) {
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x>=529 && theBullets[i].y<672 && theBullets[i].y>617 && theBullets[i].x<599){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x> 754 && theBullets[i].y > 220 && theBullets[i].x < 780 && theBullets[i].y < 625){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x > 754 && theBullets[i].y > 95 && theBullets[i].x < 780 && theBullets[i].y < 150) {
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x>700 && theBullets[i].y< 800 && theBullets[i].y>640 && theBullets[i].x<763){
+				theBullets.splice(i,1);
+			//} else if (pXpos>=708 && pYpos<162 && pYpos>=132 && pXpos<763){
+				//pXpos = 708;
+			//} else if (pXpos>=804 && pYpos>377 && pYpos<432 && pXpos<987){
+				//pXpos = 804;
+			} else if (theBullets[i].x>930 && theBullets[i].y> 99 && theBullets[i].y< 383 && theBullets[i].x<953){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x>976 && theBullets[i].y>77 && theBullets[i].y<132 && theBullets[i].x<1102){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x>=1167 && theBullets[i].y>=99 && theBullets[i].y<=617 && theBullets[i].x<1184){
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x <= 204 && theBullets[i].y >= 0 && theBullets[i].y <= 270 && theBullets[i].x > 60) {
+				theBullets.splice(i,1);
+			} else if (theBullets[i].x>=canvas.width-8){
 				theBullets.splice(i,1);
 			}
 		}
@@ -1082,3 +1208,13 @@ function checkBulletHits(){
 2. fix the shooting
 4. make the bullets stop when they hit a wall
 */
+function tmon(){
+	mouseDown=false;
+	if(mON){
+		mON=false;
+		bGM.volume=0.25;
+	} else {
+		mON=true;
+		bGM.volume=0;
+	}
+};
