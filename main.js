@@ -866,18 +866,18 @@ function shoot(px,py,mx,my){
 		}
 		console.log(gunEquipped());
 		if (gunEquipped().name=="sg"){
-			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
-			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2),true);
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2),true);
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2),true);
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2),true);
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2),true);
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2),true);
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2),true);
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2),true);
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2),true);
+			createBullet(mx, my+sgSpread(gunEquipped().accuracyModifier), pXpos + (32 / 2), pYpos + (32 / 2),true);
 		} else {
-			createBullet(mx, my, pXpos + (32 / 2), pYpos + (32 / 2));
+			createBullet(mx, my, pXpos + (32 / 2), pYpos + (32 / 2),true);
 		}
 		ammo--;
 		gunEquipped().clipAmmo--;
@@ -975,7 +975,7 @@ function pST (){
 	}
 	return tTD;
 };
-function createBullet(targetX, targetY, shooterX, shooterY) {
+function createBullet(targetX, targetY, shooterX, shooterY,isPlayersBullet) {
 	if (!(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false&&health>0)) {
 		console.log (!(enemies[0].isAlive==false && enemies[1].isAlive==false && enemies[2].isAlive==false && enemies[3].isAlive==false&&health>0));
 		deltaX = targetX - shooterX;
@@ -994,7 +994,8 @@ function createBullet(targetX, targetY, shooterX, shooterY) {
 			w: 5,
 			h: 5,
 			color: 'red',
-			angle: rotation
+			angle: rotation,
+			iPB:isPlayersBullet
 		});
 		
 		// if (shotSwitcher === 1) {
@@ -1053,7 +1054,7 @@ function bulletsDraw() {
 function checkBulletHits(){
 	for(var i=0; i<theBullets.length;i++){
 		for (var j=0; j<enemies.length;j++){
-			if(theBullets[i].x>=enemies[j].xPos&&theBullets[i].x<=enemies[j].xPos+32&&theBullets[i].y>=enemies[j].yPos&&theBullets[i].y<=enemies[j].yPos+32){
+			if(theBullets[i].x>=enemies[j].xPos&&theBullets[i].x<=enemies[j].xPos+32&&theBullets[i].y>=enemies[j].yPos&&theBullets[i].y<=enemies[j].yPos+32 && theBullets[i].iPB){
 				enemies[j].health-=gunEquipped().damage;
 				theBullets.splice(i,1);
 				//enemies.splice(j,1);
